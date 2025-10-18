@@ -12,6 +12,7 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.8
+  flutter_native_splash: 2.4.7
 
 dev_dependencies:
   flutter_test:
@@ -24,3 +25,15 @@ dev_dependencies:
 flutter:
   uses-material-design: true
 
+assets:
+  - assets/images/
+
+
+flutter_native_splash:
+  color: "#FFFFFF"
+  image: assets/images/logo.png
+  android: true
+  ios: true
+  android_12:
+    color: "#FFFFFF"
+    image: assets/images/logo_12.png
