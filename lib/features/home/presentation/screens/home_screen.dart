@@ -5,12 +5,9 @@ import 'package:petfinder/core/widgets/category_chip.dart';
 import 'package:petfinder/features/home/presentation/screens/widgets/filter_button.dart';
 import 'package:petfinder/features/home/presentation/screens/widgets/pet_card.dart';
 import 'package:petfinder/features/home/presentation/screens/widgets/search_bar.dart';
-
 import '../../../../core/di/injection_container.dart';
-import '../../../../core/routing/routes.dart';
 import '../../../../core/utils/app_colors.dart';
 import '../../../../core/utils/pet_type.dart';
-import '../../../../core/utils/snackbar_helper.dart';
 import '../../../details/presentation/screens/details_screen.dart';
 import '../../domain/entities/pet.dart';
 import '../bloc/pet_list_bloc.dart';
@@ -18,7 +15,7 @@ import '../bloc/pet_list_event.dart';
 import '../bloc/pet_list_state.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -27,6 +24,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   String selectedCategory = 'All';
   late final PetListBloc _petListBloc;
+  late final TextEditingController _searchController;
 
   final List<String> categories = [
     'All',
@@ -47,11 +45,13 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _petListBloc = createPetListBloc();
+    _searchController = TextEditingController();
   }
 
   @override
   void dispose() {
     _petListBloc.close();
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -94,14 +94,24 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     Expanded(
                       child: CustomSearchBar(
-                        hintText: 'Search',
-                        leading: const Icon(Icons.search),
+                        onChanged: (query) {
+                          final type = selectedCategory == 'Cats'
+                              ? PetType.cat
+                              : selectedCategory == 'Dogs'
+                              ? PetType.dog
+                              : null;
+
+                          if (query.isEmpty) {
+                            _petListBloc.add(LoadPets(type: type));
+                          } else {
+                            _petListBloc.add(SearchPets(query, type: type));
+                          }
+                        },
+                        controller: _searchController,
                       ),
                     ),
                     const SizedBox(width: 12),
-                    FilterButton(onTap: () {
-
-                    }),
+                    FilterButton(onTap: () {}),
                   ],
                 ),
               ),
@@ -163,16 +173,20 @@ class _HomeScreenState extends State<HomeScreen> {
                           final Pet pet = pets[index];
                           return PetCard(
                             name: pet.name,
-                            image: pet.imageUrl ?? 'assets/images/placeholder.png',
+                            image:
+                                pet.imageUrl ?? 'assets/images/placeholder.png',
                             gender: pet.type == PetType.cat ? 'Cat' : 'Dog',
                             age: pet.origin ?? 'Unknown origin',
                             distance: '${index + 1}.0 km away',
                             onTap: () {
-                              Navigator.push(context,
+                              Navigator.push(
+                                context,
                                 MaterialPageRoute(
                                   builder: (_) => DetailsScreen(
                                     type: pet.type,
-                                    petId: pet.type == PetType.cat ? pet.id : int.parse(pet.id),
+                                    petId: pet.type == PetType.cat
+                                        ? pet.id
+                                        : int.parse(pet.id),
                                   ),
                                 ),
                               );
@@ -199,18 +213,15 @@ class _HomeScreenState extends State<HomeScreen> {
   void _handleCategorySelection(String category) {
     setState(() => selectedCategory = category);
 
-    switch (category) {
-      case 'All':
-        _petListBloc.add(LoadPets());
-        break;
-      case 'Cats':
-        _petListBloc.add(LoadPets(type: PetType.cat));
-        break;
-      case 'Dogs':
-        _petListBloc.add(LoadPets(type: PetType.dog));
-        break;
-      default:
-        SnackBarHelper.showSnackBar(context, '$category coming soon!');
-    }
+    // Reset search bar text
+    _searchController.clear();
+
+    // Decide which type to load
+    PetType? type;
+    if (category == 'Cats') type = PetType.cat;
+    if (category == 'Dogs') type = PetType.dog;
+
+    _petListBloc.add(LoadPets(type: type));
   }
+
 }

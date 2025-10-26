@@ -4,11 +4,8 @@ import '../../../../core/utils/pet_type.dart';
 import '../models/pet_model.dart';
 
 abstract class PetDataSource {
-  Future<List<PetModel>> getPets({
-    required PetType type,
-    int limit = 10,
-    int page = 0,
-  });
+  Future<List<PetModel>> getPets({required PetType type, int limit = 10, int page = 0,});
+  Future<List<PetModel>> searchPets(PetType type, String query);
 }
 
 class PetDataSourceImpl implements PetDataSource {
@@ -17,11 +14,7 @@ class PetDataSourceImpl implements PetDataSource {
   PetDataSourceImpl(this.client);
 
   @override
-  Future<List<PetModel>> getPets({
-    required PetType type,
-    int limit = 10,
-    int page = 0,
-  }) async {
+  Future<List<PetModel>> getPets({required PetType type, int limit = 10, int page = 0,}) async {
     final baseUrl = type == PetType.cat
         ? ApiConstants.catBaseUrl
         : ApiConstants.dogBaseUrl;
@@ -34,4 +27,19 @@ class PetDataSourceImpl implements PetDataSource {
     final List data = response.data;
     return data.map((json) => PetModel.fromJson(json, type)).toList();
   }
+
+  @override
+  Future<List<PetModel>> searchPets(PetType type, String query) async {
+    final baseUrl = type == PetType.cat
+        ? ApiConstants.catBaseUrl
+        : ApiConstants.dogBaseUrl;
+
+    final response = await client.get(
+      baseUrl,
+      '${ApiConstants.breeds}/search?q=$query&attach_image=1',
+    );
+    final List data = response.data;
+    return data.map((json) => PetModel.fromJson(json, type)).toList();
+  }
+
 }

@@ -2,14 +2,10 @@ import 'package:flutter/material.dart';
 import '../../../../../core/utils/app_colors.dart';
 
 class CustomSearchBar extends StatelessWidget {
-  final String hintText;
-  final Widget leading;
+  final ValueChanged<String> onChanged;
+  final TextEditingController? controller;
 
-  const CustomSearchBar({
-    Key? key,
-    required this.hintText,
-    required this.leading,
-  }) : super(key: key);
+  const CustomSearchBar({super.key, required this.onChanged, this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -22,13 +18,17 @@ class CustomSearchBar extends StatelessWidget {
       child: Row(
         children: [
           const SizedBox(width: 16),
-          leading,
+          const Icon(Icons.search, color: AppColors.textSecondary),
           const SizedBox(width: 12),
-          Text(
-            hintText,
-            style: const TextStyle(
-              color: AppColors.textSecondary,
-              fontSize: 16,
+          Expanded(
+            child: TextField(
+              controller: controller,
+              decoration: const InputDecoration(
+                hintText: 'Search',
+                border: InputBorder.none,
+                isCollapsed: true,
+              ),
+              onChanged: onChanged,
             ),
           ),
         ],

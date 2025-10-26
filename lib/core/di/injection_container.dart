@@ -8,7 +8,8 @@ import '../../features/details/presentation/bloc/pet_details_bloc.dart';
 import '../../features/home/data/datasources/pet_data_source.dart';
 import '../../features/home/data/repositories/pet_repository_impl.dart';
 import '../../features/home/domain/repositories/pet_repository.dart';
-import '../../features/home/domain/use_cases/get_all_pets.dart';
+import '../../features/home/domain/use_cases/get_all_pets_use_case.dart';
+import '../../features/home/domain/use_cases/search_pets_use_case.dart';
 import '../../features/home/presentation/bloc/pet_list_bloc.dart';
 import '../network/dio_client.dart';
 
@@ -28,8 +29,9 @@ Future<void> initCore() async {
 Future<void> initPetList() async {
   sl.registerLazySingleton<PetDataSource>(() => PetDataSourceImpl(sl()));
   sl.registerLazySingleton<PetRepository>(() => PetRepositoryImpl(sl()));
-  sl.registerLazySingleton(() => GetAllPets(sl()));
-  sl.registerFactory(() => PetListBloc(sl()));
+  sl.registerLazySingleton(() => GetAllPetsUseCase(sl()));
+  sl.registerLazySingleton(() => SearchPetsUseCase(sl()));
+  sl.registerFactory(() => PetListBloc(sl(), sl()));
 }
 
 Future<void> initPetDetails() async {

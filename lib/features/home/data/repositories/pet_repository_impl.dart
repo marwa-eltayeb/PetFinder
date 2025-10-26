@@ -22,4 +22,13 @@ class PetRepositoryImpl implements PetRepository {
 
     return allPets;
   }
+
+  @override
+  Future<List<Pet>> searchPets(String query) async {
+    final results = await Future.wait([
+      remoteDataSource.searchPets(PetType.cat, query),
+      remoteDataSource.searchPets(PetType.dog, query),
+    ]);
+    return results.expand((e) => e).toList();
+  }
 }
