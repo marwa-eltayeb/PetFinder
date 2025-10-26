@@ -33,7 +33,7 @@ class OnboardingScreen extends StatelessWidget {
                       'Find Your Best\nCompanion With Us',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        fontSize: 40,
+                        fontSize: 35,
                         fontWeight: FontWeight.w700,
                         color: AppColors.textPrimary,
                         height: 1.2,
@@ -48,7 +48,7 @@ class OnboardingScreen extends StatelessWidget {
                       'Join & discover the best suitable pets as\nper your preferences in your location',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        fontSize: 18,
+                        fontSize: 16,
                         fontWeight: FontWeight.w400,
                         color: AppColors.textSecondary,
                         height: 1.5,
