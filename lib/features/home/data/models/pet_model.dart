@@ -8,6 +8,7 @@ class PetModel extends Pet {
     required super.type,
     super.imageUrl,
     super.origin,
+    super.temperament,
   });
 
   factory PetModel.fromJson(Map<String, dynamic> json, PetType type) {
@@ -22,6 +23,7 @@ class PetModel extends Pet {
       name: json['name'],
       imageUrl: imageUrl,
       origin: json['origin'],
+      temperament: json['temperament'],
       type: type,
     );
   }

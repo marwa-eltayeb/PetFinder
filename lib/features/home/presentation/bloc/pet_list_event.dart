@@ -15,3 +15,11 @@ class SearchPets extends PetListEvent {
   final PetType? type;
   SearchPets(this.query, {this.type});
 }
+
+class FilterPets extends PetListEvent {
+  final String? origin;
+  final String? temperament;
+  final PetType? type;
+
+  FilterPets({this.origin, this.temperament, this.type});
+}

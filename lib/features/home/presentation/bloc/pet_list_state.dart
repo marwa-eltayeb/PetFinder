@@ -8,9 +8,15 @@ class PetListInitial extends PetListState {}
 class PetListLoading extends PetListState {}
 
 class PetListLoaded extends PetListState {
-  final List<Pet> pets;
-  final PetType? filter;
-  PetListLoaded(this.pets, {this.filter});
+  final List<Pet> allPets;
+  final List<Pet> filteredPets;
+  final PetType? petType;
+
+  PetListLoaded({
+    required this.allPets,
+    required this.filteredPets,
+    this.petType,
+  });
 }
 
 class PetListError extends PetListState {

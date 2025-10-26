@@ -6,6 +6,7 @@ class Pet {
   final PetType type;
   final String? imageUrl;
   final String? origin;
+  final String? temperament;
 
   Pet({
     required this.id,
@@ -13,5 +14,6 @@ class Pet {
     required this.type,
     this.imageUrl,
     this.origin,
+    this.temperament,
   });
 }

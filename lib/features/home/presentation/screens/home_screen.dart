@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:petfinder/core/widgets/bottom_nav_bar.dart';
 import 'package:petfinder/core/widgets/category_chip.dart';
 import 'package:petfinder/features/home/presentation/screens/widgets/filter_button.dart';
+import 'package:petfinder/features/home/presentation/screens/widgets/filter_sheet.dart';
 import 'package:petfinder/features/home/presentation/screens/widgets/pet_card.dart';
 import 'package:petfinder/features/home/presentation/screens/widgets/search_bar.dart';
 import '../../../../core/di/injection_container.dart';
@@ -10,6 +11,7 @@ import '../../../../core/utils/app_colors.dart';
 import '../../../../core/utils/pet_type.dart';
 import '../../../details/presentation/screens/details_screen.dart';
 import '../../domain/entities/pet.dart';
+import '../../domain/utils/pet_filter_utils.dart';
 import '../bloc/pet_list_bloc.dart';
 import '../bloc/pet_list_event.dart';
 import '../bloc/pet_list_state.dart';
@@ -110,8 +112,12 @@ class _HomeScreenState extends State<HomeScreen> {
                         controller: _searchController,
                       ),
                     ),
+
                     const SizedBox(width: 12),
-                    FilterButton(onTap: () {}),
+
+                    FilterButton(
+                      onTap: () => _showFilterSheet(),
+                    ),
                   ],
                 ),
               ),
@@ -162,7 +168,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: CircularProgressIndicator(strokeWidth: 2),
                       );
                     } else if (state is PetListLoaded) {
-                      final pets = state.pets;
+                      final pets = state.filteredPets;
                       if (pets.isEmpty) {
                         return const Center(child: Text('No pets found.'));
                       }
@@ -222,6 +228,24 @@ class _HomeScreenState extends State<HomeScreen> {
     if (category == 'Dogs') type = PetType.dog;
 
     _petListBloc.add(LoadPets(type: type));
+  }
+
+  void _showFilterSheet() {
+    final state = _petListBloc.state;
+    if (state is! PetListLoaded) return;
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (_) => FilterSheet(
+        origins: PetFilterUtils.extractOrigins(state.allPets),
+        temperaments: PetFilterUtils.extractTemperaments(state.allPets),
+        bloc: _petListBloc,
+      ),
+    );
   }
 
 }

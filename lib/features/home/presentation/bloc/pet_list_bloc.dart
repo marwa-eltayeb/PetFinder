@@ -13,16 +13,25 @@ class PetListBloc extends Bloc<PetListEvent, PetListState> {
   PetListBloc(this.getAllPets, this.searchPets) : super(PetListInitial()) {
     on<LoadPets>(_onLoadPets);
     on<SearchPets>(_onSearchPets);
+    on<FilterPets>(_onFilterPets);
   }
 
   Future<void> _onLoadPets(LoadPets event, Emitter<PetListState> emit) async {
     emit(PetListLoading());
     try {
       _allPets = await getAllPets(limit: event.limit, page: event.page);
-      final pets = event.type != null
+
+      // Get pets for this category
+      final categoryPets = event.type != null
           ? _allPets.where((p) => p.type == event.type).toList()
           : _allPets;
-      emit(PetListLoaded(pets));
+
+      emit(PetListLoaded(
+        allPets: categoryPets,
+        filteredPets: categoryPets,
+        petType: event.type,
+      ));
+
     } catch (e) {
       emit(PetListError(e.toString()));
     }
@@ -37,9 +46,55 @@ class PetListBloc extends Bloc<PetListEvent, PetListState> {
           ? results.where((p) => p.type == event.type).toList()
           : results;
 
-      emit(PetListLoaded(filtered, filter: event.type));
+      emit(PetListLoaded(
+        allPets: filtered,
+        filteredPets: filtered,
+        petType: event.type,
+      ));
     } catch (e) {
       emit(PetListError(e.toString()));
     }
   }
+
+  Future<void> _onFilterPets(FilterPets event, Emitter<PetListState> emit) async {
+    final currentState = state;
+    if (currentState is! PetListLoaded) return;
+
+    List<Pet> filtered = currentState.allPets;
+
+    // If both are null, show all pets
+    if (event.origin == null && event.temperament == null) {
+      emit(PetListLoaded(
+        allPets: currentState.allPets,
+        filteredPets: currentState.allPets,
+        petType: currentState.petType,
+      ));
+      return;
+    }
+
+    // Filter by origin
+    if (event.origin != null && event.origin!.isNotEmpty) {
+      filtered = filtered
+          .where((p) => (p.origin ?? '')
+          .toLowerCase()
+          .contains(event.origin!.toLowerCase()))
+          .toList();
+    }
+
+    // Filter by temperament
+    if (event.temperament != null && event.temperament!.isNotEmpty) {
+      filtered = filtered
+          .where((p) => (p.temperament ?? '')
+          .toLowerCase()
+          .contains(event.temperament!.toLowerCase()))
+          .toList();
+    }
+
+    emit(PetListLoaded(
+      allPets: currentState.allPets,
+      filteredPets: filtered,
+      petType: currentState.petType,
+    ));
+  }
+
 }
