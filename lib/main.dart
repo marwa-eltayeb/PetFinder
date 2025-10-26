@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:petfinder/core/routing/app_route.dart';
 import 'package:petfinder/core/routing/routes.dart';
 
-void main() {
+import 'core/di/injection_container.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await initAll();
   runApp(const MyApp());
 }
 
