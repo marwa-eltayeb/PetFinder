@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:petfinder/core/routing/routes.dart';
-import '../../features/details/presentation/details_screen.dart';
-import '../../features/favorites/presentation/favorites_screen.dart';
-import '../../features/home/presentation/home_screen.dart';
+import '../../features/details/presentation/screens/details_screen.dart';
+import '../../features/favorites/presentation/screens/favorites_screen.dart';
+import '../../features/home/presentation/screens/home_screen.dart';
 import '../../features/onboarding/onboarding_screen.dart';
+import '../utils/pet_type.dart';
 
 class AppRouter {
   Route generateRoute(RouteSettings settings) {
@@ -15,8 +16,12 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => HomeScreen());
 
       case Routes.detailsScreen:
-        final petId = settings.arguments as int;
-        return MaterialPageRoute(builder: (_) => DetailsScreen(petId: petId));
+        final args = settings.arguments as Map<String, dynamic>;
+        final type = args['type'] as PetType;
+        final petId = args['petId'] as String;
+        return MaterialPageRoute(
+          builder: (_) => DetailsScreen(type: type, petId: petId),
+        );
 
       case Routes.favoritesScreen:
         return MaterialPageRoute(builder: (_) => FavoritesScreen());
