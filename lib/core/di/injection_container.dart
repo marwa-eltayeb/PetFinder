@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 import '../../features/details/data/datasources/pet_details_data_source.dart';
 import '../../features/details/data/repositories/pet_details_repository_impl.dart';
 import '../../features/details/domain/repositories/pet_details_repository.dart';
-import '../../features/details/domain/use_cases/get_pet_details.dart';
+import '../../features/details/domain/use_cases/get_pet_details_use_case.dart';
 import '../../features/details/presentation/bloc/pet_details_bloc.dart';
 import '../../features/home/data/datasources/pet_data_source.dart';
 import '../../features/home/data/repositories/pet_repository_impl.dart';
@@ -37,6 +37,6 @@ Future<void> initPetList() async {
 Future<void> initPetDetails() async {
   sl.registerLazySingleton<PetDetailsDataSource>(() => PetDetailsDataSourceImpl(sl()));
   sl.registerLazySingleton<PetDetailsRepository>(() => PetDetailsRepositoryImpl(sl()));
-  sl.registerLazySingleton(() => GetPetDetails(sl()));
+  sl.registerLazySingleton(() => GetPetDetailsUseCase(sl()));
   sl.registerFactory(() => PetDetailsBloc(sl()));
 }
