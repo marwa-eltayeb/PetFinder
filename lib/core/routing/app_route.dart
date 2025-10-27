@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:petfinder/core/routing/routes.dart';
 import '../../features/details/presentation/screens/details_screen.dart';
-import '../../features/favorites/presentation/screens/favorites_screen.dart';
+import '../../features/favourites/presentation/screens/favorites_screen.dart';
 import '../../features/home/presentation/screens/home_screen.dart';
 import '../../features/onboarding/onboarding_screen.dart';
 import '../utils/pet_type.dart';

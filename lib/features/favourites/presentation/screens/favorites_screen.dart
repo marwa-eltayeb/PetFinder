@@ -1,0 +1,224 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../../core/utils/app_colors.dart';
+import '../../../../../core/widgets/bottom_nav_bar.dart';
+import '../../../../../core/widgets/category_chip.dart';
+import '../../../../core/di/injection_container.dart';
+import '../../../../core/routing/routes.dart';
+import '../../../../core/utils/pet_type.dart';
+import '../bloc/favorites_bloc.dart';
+import '../bloc/favorites_event.dart';
+import '../bloc/favorites_state.dart';
+import '../widgets/favorite_pet_card.dart';
+
+class FavoritesScreen extends StatefulWidget {
+  const FavoritesScreen({super.key});
+
+  @override
+  State<FavoritesScreen> createState() => _FavoritesScreenState();
+}
+
+class _FavoritesScreenState extends State<FavoritesScreen> {
+  String selectedCategory = 'All';
+  late final FavouritesBloc _favouritesBloc;
+
+  final List<String> categories = [
+    'All',
+    'Cats',
+    'Dogs',
+    'Birds',
+    'Fish',
+    'Reptiles',
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _favouritesBloc = sl<FavouritesBloc>();
+    _favouritesBloc.add(LoadFavouritesEvent(type: null));
+  }
+
+  @override
+  void dispose() {
+    _favouritesBloc.close();
+    super.dispose();
+  }
+
+  PetType? _getTypeFromCategory() {
+    switch (selectedCategory) {
+      case 'Cats':
+        return PetType.cat;
+      case 'Dogs':
+        return PetType.dog;
+      default:
+        return null;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider.value(
+      value: _favouritesBloc,
+      child: Scaffold(
+        backgroundColor: AppColors.background,
+        body: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Text(
+                  'Your Favourite Pets',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              SizedBox(
+                height: 40,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  itemCount: categories.length,
+                  itemBuilder: (context, index) {
+                    return CategoryChip(
+                      label: categories[index],
+                      isSelected: selectedCategory == categories[index],
+                      onTap: () {
+                        setState(() {
+                          selectedCategory = categories[index];
+                        });
+                        _favouritesBloc.add(
+                          LoadFavouritesEvent(type: _getTypeFromCategory()),
+                        );
+                      },
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 24),
+              Expanded(
+                child: BlocBuilder<FavouritesBloc, FavouritesState>(
+                  builder: (context, state) {
+                    if (state is FavouritesLoading) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (state is FavouritesError) {
+                      return Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(
+                              Icons.error_outline,
+                              size: 64,
+                              color: Colors.red,
+                            ),
+                            const SizedBox(height: 16),
+                            Text(
+                              'Error loading favourites',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.textPrimary,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 32),
+                              child: Text(
+                                state.message,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: AppColors.textSecondary,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    } else if (state is FavouritesLoaded) {
+                      final favourites = state.favourites;
+                      if (favourites.isEmpty) {
+                        return Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.favorite_border,
+                                size: 64,
+                                color: AppColors.textSecondary,
+                              ),
+                              const SizedBox(height: 16),
+                              Text(
+                                'No favourites yet',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.textPrimary,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                'Start adding pets to your favourites!',
+                                style: TextStyle(
+                                  color: AppColors.textSecondary,
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+
+                      return GridView.builder(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          childAspectRatio: 0.75,
+                          crossAxisSpacing: 16,
+                          mainAxisSpacing: 16,
+                        ),
+                        itemCount: favourites.length,
+                        itemBuilder: (context, index) {
+                          final fav = favourites[index];
+                          return FavoritePetCard(
+                            name: fav.breedName ?? fav.imageId,
+                            image: fav.imageUrl ?? 'assets/images/placeholder.png',
+                            origin: fav.origin ?? 'Unknown',
+                            isFavourite: true,
+                            onTap: () {
+                              Navigator.pushNamed(
+                                context,
+                                Routes.detailsScreen,
+                                arguments: {
+                                  'type': fav.type,
+                                  'petId': fav.imageId,
+                                },
+                              );
+                            },
+                            onFavorite: () {
+                              _favouritesBloc.add(
+                                RemoveFavouriteEvent(
+                                  type: fav.type,
+                                  favouriteId: fav.id,
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      );
+                    }
+                    return const SizedBox.shrink();
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+        bottomNavigationBar: const BottomNavBar(currentIndex: 1),
+      ),
+    );
+  }
+}

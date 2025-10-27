@@ -9,6 +9,7 @@ class PetCard extends StatelessWidget {
   final String distance;
   final VoidCallback onTap;
   final VoidCallback onFavorite;
+  final bool isFavourite;
 
   const PetCard({
     Key? key,
@@ -19,6 +20,7 @@ class PetCard extends StatelessWidget {
     required this.distance,
     required this.onTap,
     required this.onFavorite,
+    required this.isFavourite,
   }) : super(key: key);
 
   @override
@@ -133,8 +135,8 @@ class PetCard extends StatelessWidget {
             ),
             IconButton(
               onPressed: onFavorite,
-              icon: const Icon(
-                Icons.favorite_border,
+              icon: Icon(
+                isFavourite ? Icons.favorite : Icons.favorite_border,
                 color: AppColors.primary,
                 size: 28,
               ),

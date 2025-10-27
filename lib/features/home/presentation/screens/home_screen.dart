@@ -9,7 +9,11 @@ import 'package:petfinder/features/home/presentation/screens/widgets/search_bar.
 import '../../../../core/di/injection_container.dart';
 import '../../../../core/utils/app_colors.dart';
 import '../../../../core/utils/pet_type.dart';
+import '../../../../core/utils/snackbar_helper.dart';
 import '../../../details/presentation/screens/details_screen.dart';
+import '../../../favourites/presentation/bloc/favorites_bloc.dart';
+import '../../../favourites/presentation/bloc/favorites_event.dart';
+import '../../../favourites/presentation/bloc/favorites_state.dart';
 import '../../domain/entities/pet.dart';
 import '../../domain/utils/pet_filter_utils.dart';
 import '../bloc/pet_list_bloc.dart';
@@ -59,8 +63,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider.value(
-      value: _petListBloc,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider.value(value: _petListBloc),
+        BlocProvider(create: (_) => sl<FavouritesBloc>()..add(LoadFavouritesEvent(type: null))),
+      ],
       child: Scaffold(
         backgroundColor: AppColors.background,
         body: SafeArea(
@@ -112,12 +119,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         controller: _searchController,
                       ),
                     ),
-
                     const SizedBox(width: 12),
-
-                    FilterButton(
-                      onTap: () => _showFilterSheet(),
-                    ),
+                    FilterButton(onTap: () => _showFilterSheet()),
                   ],
                 ),
               ),
@@ -136,7 +139,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
               ),
-
               const SizedBox(height: 16),
 
               SizedBox(
@@ -155,54 +157,90 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
                 ),
               ),
-
               const SizedBox(height: 24),
 
-              // Pet List
+              // Pet List + Favourites handling
               Expanded(
                 child: BlocBuilder<PetListBloc, PetListState>(
                   bloc: _petListBloc,
-                  builder: (context, state) {
-                    if (state is PetListLoading) {
+                  builder: (context, petState) {
+                    if (petState is PetListLoading) {
                       return const Center(
                         child: CircularProgressIndicator(strokeWidth: 2),
                       );
-                    } else if (state is PetListLoaded) {
-                      final pets = state.filteredPets;
+                    } else if (petState is PetListLoaded) {
+                      final pets = petState.filteredPets;
                       if (pets.isEmpty) {
                         return const Center(child: Text('No pets found.'));
                       }
-                      return ListView.builder(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        itemCount: pets.length,
-                        itemBuilder: (context, index) {
-                          final Pet pet = pets[index];
-                          return PetCard(
-                            name: pet.name,
-                            image:
-                                pet.imageUrl ?? 'assets/images/placeholder.png',
-                            gender: pet.type == PetType.cat ? 'Cat' : 'Dog',
-                            age: pet.origin ?? 'Unknown origin',
-                            distance: '${index + 1}.0 km away',
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => DetailsScreen(
-                                    type: pet.type,
-                                    petId: pet.type == PetType.cat
-                                        ? pet.id
-                                        : int.parse(pet.id),
-                                  ),
-                                ),
+
+                      return BlocBuilder<FavouritesBloc, FavouritesState>(
+                        builder: (context, favState) {
+                          final favourites = favState is FavouritesLoaded
+                              ? favState.favourites
+                              : [];
+
+                          return ListView.builder(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            itemCount: pets.length,
+                            itemBuilder: (context, index) {
+                              final Pet pet = pets[index];
+                              final isFavourite = favourites.any((f) =>
+                              f.imageId == pet.id && f.type == pet.type);
+
+                              return PetCard(
+                                name: pet.name,
+                                image: pet.imageUrl ?? 'assets/images/placeholder.png',
+                                gender: pet.type == PetType.cat ? 'Cat' : 'Dog',
+                                age: pet.origin ?? 'Unknown origin',
+                                distance: '${index + 1}.0 km away',
+                                isFavourite: isFavourite,
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => DetailsScreen(
+                                        type: pet.type,
+                                        petId: pet.id,
+                                      ),
+                                    ),
+                                  );
+                                },
+                                onFavorite: () {
+                                  final favBloc = context.read<FavouritesBloc>();
+                                  if (isFavourite) {
+                                    // Find the favourite to remove
+                                    final favourite = favourites.firstWhere((f) => f.imageId == pet.id && f.type == pet.type,);
+                                    favBloc.add(RemoveFavouriteEvent(
+                                      type: pet.type,
+                                      favouriteId: favourite.id,
+                                    ));
+                                    SnackBarHelper.showInfo(
+                                      context,
+                                      '${pet.name} removed from favourites',
+                                    );
+                                  } else {
+                                    favBloc.add(AddFavouriteEvent(
+                                      type: pet.type,
+                                      imageId: pet.id,
+                                      subId: 'user123',
+                                      name: pet.name,
+                                      imageUrl: pet.imageUrl ?? '',
+                                      origin: pet.origin ?? 'Unknown',
+                                    ));
+                                    SnackBarHelper.showInfo(
+                                      context,
+                                      '${pet.name} added to favourites',
+                                    );
+                                  }
+                                },
                               );
                             },
-                            onFavorite: () {},
                           );
                         },
                       );
-                    } else if (state is PetListError) {
-                      return Center(child: Text('Error: ${state.message}'));
+                    } else if (petState is PetListError) {
+                      return Center(child: Text('Error: ${petState.message}'));
                     }
                     return const SizedBox.shrink();
                   },
@@ -218,11 +256,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _handleCategorySelection(String category) {
     setState(() => selectedCategory = category);
-
-    // Reset search bar text
     _searchController.clear();
 
-    // Decide which type to load
     PetType? type;
     if (category == 'Cats') type = PetType.cat;
     if (category == 'Dogs') type = PetType.dog;
@@ -247,5 +282,4 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-
 }
