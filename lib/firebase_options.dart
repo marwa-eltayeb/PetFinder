@@ -65,4 +65,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'petfinder-d43d2.firebasestorage.app',
     iosBundleId: 'com.example.petfinder',
   );
+
 }
