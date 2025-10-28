@@ -41,6 +41,23 @@ android {
             signingConfig = signingConfigs.getByName("debug")
         }
     }
+
+    flavorDimensions += "default"
+
+    productFlavors {
+        create("development") {
+            dimension = "default"
+            applicationId = "com.example.petfinder.dev"
+            versionNameSuffix = "-dev"
+            resValue("string", "app_name", "Pet Finder Dev")
+        }
+        create("production") {
+            dimension = "default"
+            applicationId = "com.example.petfinder"
+            resValue("string", "app_name", "Pet Finder")
+        }
+    }
+
 }
 
 flutter {

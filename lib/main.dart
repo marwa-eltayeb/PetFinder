@@ -11,9 +11,10 @@ import 'package:petfinder/core/routing/app_route.dart';
 import 'package:petfinder/core/routing/routes.dart';
 
 import 'core/di/injection_container.dart';
+import 'core/utils/config.dart';
 import 'firebase_options.dart';
 
-void main() async {
+void mainCommon(String environment) async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
 
@@ -27,24 +28,34 @@ void main() async {
   };
 
   await initAll();
-  runApp(const MyApp());
+
+  Config.environment = environment;
+
+  runApp(MyApp(environment: environment));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+
+  final String environment;
+  const MyApp({super.key, required this.environment});
 
   static final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   @override
   Widget build(BuildContext context) {
+
+    if (Config.isDev) {
+      debugPrint("Running Development Flavor");
+    }
+
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Pet Finder',
-      theme: ThemeData(
+        debugShowCheckedModeBanner: !Config.isProd,
+        title: 'Pet Finder ($environment)',
+        theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
       initialRoute: Routes.onboardingScreen,
-      onGenerateRoute: AppRouter().generateRoute,
+      onGenerateRoute: AppRouter(environment: environment).generateRoute,
       navigatorObservers: [FirebaseAnalyticsObserver(analytics: analytics)]
     );
   }

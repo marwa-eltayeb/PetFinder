@@ -1,0 +1,4 @@
+// iOS development flavor
+FLAVOR = development
+APP_NAME = Pet Finder Dev
+GOOGLE_SERVICE_INFO_PLIST = Firebase/development/GoogleService-Info.plist

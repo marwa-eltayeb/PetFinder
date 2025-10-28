@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:petfinder/core/routing/routes.dart';
+import 'package:petfinder/core/utils/config.dart';
 import 'package:petfinder/features/onboarding/widgets/get_started_button.dart';
 import 'package:petfinder/features/onboarding/widgets/pet_image_section.dart';
 
 import '../../core/utils/app_colors.dart';
 
 class OnboardingScreen extends StatelessWidget {
-  const OnboardingScreen({Key? key}) : super(key: key);
+
+  final String environment;
+  const OnboardingScreen({super.key, required this.environment});
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
@@ -29,10 +33,10 @@ class OnboardingScreen extends StatelessWidget {
                 child: Column(
                   children: [
                     // Title
-                    const Text(
-                      'Find Your Best\nCompanion With Us',
+                    Text(
+                      'Find Your Best\nCompanion With Us\n${Config.isDev ? "DEV" : ""}',
                       textAlign: TextAlign.center,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 35,
                         fontWeight: FontWeight.w700,
                         color: AppColors.textPrimary,

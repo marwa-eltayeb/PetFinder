@@ -1,0 +1,4 @@
+// ios/Flavor.xcconfig
+// Default flavor values (override at build time if needed)
+FLAVOR = production
+APP_NAME = Pet Finder

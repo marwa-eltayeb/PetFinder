@@ -7,10 +7,14 @@ import '../../features/onboarding/onboarding_screen.dart';
 import '../utils/pet_type.dart';
 
 class AppRouter {
+
+  final String environment;
+  AppRouter({required this.environment});
+
   Route generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case Routes.onboardingScreen:
-        return MaterialPageRoute(builder: (_) => OnboardingScreen());
+        return MaterialPageRoute(builder: (_) => OnboardingScreen(environment: environment));
 
       case Routes.homeScreen:
         return MaterialPageRoute(builder: (_) => HomeScreen());

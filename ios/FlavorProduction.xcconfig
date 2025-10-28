@@ -1,0 +1,4 @@
+// iOS production flavor
+FLAVOR = production
+APP_NAME = Pet Finder
+GOOGLE_SERVICE_INFO_PLIST = Firebase/production/GoogleService-Info.plist
