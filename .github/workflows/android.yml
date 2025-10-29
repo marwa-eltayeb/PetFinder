@@ -24,22 +24,28 @@ jobs:
       - name: Install Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.0'
+          flutter-version: '3.32.8'
 
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Analyze
-        run: flutter analyze
+      - name: Generate .env from GitHub Secrets
+        run: |
+          echo "CAT_API_KEY=${{ secrets.CAT_API_KEY }}" >> .env
+          echo "DOG_API_KEY=${{ secrets.DOG_API_KEY }}" >> .env    
 
       - name: Run tests
         run: flutter test
 
-      - name: Build APK
-        run: flutter build apk --release
+      - name: Build APK (Production)
+        run: flutter build apk --release --flavor production -t lib/main_production.dart
+        env:
+          CI: true
+          FLUTTER_SUPPRESS_ANALYTICS: true
 
-      - name: Upload artifact
+      - name: Upload Production APK
         uses: actions/upload-artifact@v4
         with:
-          name: app-release-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+          name: app-production-release-apk
+          path: build/app/outputs/flutter-apk/app-production-release.apk
+
