@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../../core/utils/app_colors.dart';
+import '../../../../../core/theming/theme_data.dart';
 
 class PetCard extends StatelessWidget {
   final String name;
@@ -31,7 +31,7 @@ class PetCard extends StatelessWidget {
         margin: const EdgeInsets.only(bottom: 16),
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppTheme.surface(context),
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
@@ -67,14 +67,14 @@ class PetCard extends StatelessWidget {
                     );
                   },
                   errorBuilder: (context, error, stackTrace) {
-                    return const Icon(Icons.pets, size: 40, color: AppColors.primary);
+                    return Icon(Icons.pets, size: 40, color: AppTheme.primary(context));
                   },
                 )
                     : Image.asset(
                   image,
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) {
-                    return const Icon(Icons.pets, size: 40, color: AppColors.primary);
+                    return Icon(Icons.pets, size: 40, color: AppTheme.primary(context));
                   },
                 ),
               ),
@@ -88,26 +88,26 @@ class PetCard extends StatelessWidget {
                 children: [
                   Text(
                     name,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: AppColors.textPrimary,
+                      color: AppTheme.textPrimary(context),
                     ),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     gender,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 14,
-                      color: AppColors.textSecondary,
+                      color: AppTheme.textSecondary(context),
                     ),
                   ),
                   const SizedBox(height: 2),
                   Text(
                     age,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 14,
-                      color: AppColors.textSecondary,
+                      color: AppTheme.textSecondary(context),
                     ),
                   ),
 
@@ -123,9 +123,9 @@ class PetCard extends StatelessWidget {
                       const SizedBox(width: 4),
                       Text(
                         distance,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 12,
-                          color: AppColors.textSecondary,
+                          color: AppTheme.textSecondary(context),
                         ),
                       ),
                     ],
@@ -137,7 +137,7 @@ class PetCard extends StatelessWidget {
               onPressed: onFavorite,
               icon: Icon(
                 isFavourite ? Icons.favorite : Icons.favorite_border,
-                color: AppColors.primary,
+                color: AppTheme.primary(context),
                 size: 28,
               ),
             ),

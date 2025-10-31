@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../../core/utils/app_colors.dart';
+import '../../../../../core/theming/theme_data.dart';
 
 class InfoCard extends StatelessWidget {
   final String title;
@@ -23,18 +23,18 @@ class InfoCard extends StatelessWidget {
         children: [
           Text(
             title,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,
-              color: AppColors.textPrimary,
+              color: AppTheme.textPrimary(context),
             ),
           ),
           const SizedBox(height: 4),
           Text(
             value,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 14,
-              color: AppColors.textSecondary,
+              color: AppTheme.textSecondary(context),
             ),
           ),
         ],
@@ -42,3 +42,4 @@ class InfoCard extends StatelessWidget {
     );
   }
 }
+

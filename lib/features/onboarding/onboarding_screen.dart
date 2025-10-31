@@ -3,8 +3,7 @@ import 'package:petfinder/core/routing/routes.dart';
 import 'package:petfinder/core/utils/config.dart';
 import 'package:petfinder/features/onboarding/widgets/get_started_button.dart';
 import 'package:petfinder/features/onboarding/widgets/pet_image_section.dart';
-
-import '../../core/utils/app_colors.dart';
+import '../../core/theming/theme_data.dart';
 
 class OnboardingScreen extends StatelessWidget {
 
@@ -15,7 +14,7 @@ class OnboardingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppTheme.background(context),
       body: SafeArea(
         child: Column(
           children: [
@@ -36,10 +35,10 @@ class OnboardingScreen extends StatelessWidget {
                     Text(
                       'Find Your Best\nCompanion With Us\n${Config.isDev ? "DEV" : ""}',
                       textAlign: TextAlign.center,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 35,
                         fontWeight: FontWeight.w700,
-                        color: AppColors.textPrimary,
+                        color: AppTheme.textPrimary(context),
                         height: 1.2,
                         letterSpacing: -0.5,
                       ),
@@ -48,13 +47,13 @@ class OnboardingScreen extends StatelessWidget {
                     const SizedBox(height: 16),
 
                     // Subtitle
-                    const Text(
+                    Text(
                       'Join & discover the best suitable pets as\nper your preferences in your location',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w400,
-                        color: AppColors.textSecondary,
+                        color: AppTheme.textSecondary(context),
                         height: 1.5,
                         letterSpacing: 0.1,
                       ),

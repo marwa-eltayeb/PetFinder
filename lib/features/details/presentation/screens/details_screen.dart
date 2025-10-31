@@ -7,6 +7,7 @@ import 'package:petfinder/core/utils/snackbar_helper.dart';
 import 'package:petfinder/features/favourites/presentation/bloc/favorites_bloc.dart';
 import 'package:petfinder/features/favourites/presentation/bloc/favorites_event.dart';
 import 'package:petfinder/features/favourites/presentation/bloc/favorites_state.dart';
+import '../../../../core/theming/theme_data.dart';
 import '../../../favourites/domain/entities/favourite_entity.dart';
 import '../bloc/pet_details_bloc.dart';
 import '../bloc/pet_details_event.dart';
@@ -60,7 +61,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
         BlocProvider.value(value: _favouritesBloc),
       ],
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: AppTheme.background(context),
         body: SafeArea(
           child: BlocBuilder<PetDetailsBloc, PetDetailsState>(
             builder: (context, petState) {
@@ -100,16 +101,16 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                   height: 380,
                                   errorBuilder:
                                       (context, error, stackTrace) =>
-                                  const Icon(
+                                   Icon(
                                     Icons.pets,
                                     size: 100,
-                                    color: AppColors.primary,
+                                    color: AppTheme.primary(context),
                                   ),
                                 )
-                                    : const Icon(
+                                    :  Icon(
                                   Icons.pets,
                                   size: 100,
-                                  color: AppColors.primary,
+                                  color: AppTheme.primary(context),
                                 ),
                               ),
                             ),
@@ -118,9 +119,9 @@ class _DetailsScreenState extends State<DetailsScreen> {
                               left: 16,
                               child: GestureDetector(
                                 onTap: () => Navigator.pop(context),
-                                child: const Icon(
+                                child: Icon(
                                   Icons.arrow_back_ios_new,
-                                  color: AppColors.primary,
+                                  color: AppTheme.primary(context),
                                   size: 20,
                                 ),
                               ),
@@ -166,7 +167,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                   isFavourite
                                       ? Icons.favorite
                                       : Icons.favorite_border,
-                                  color: AppColors.primary,
+                                  color: AppTheme.primary(context),
                                   size: 28,
                                 ),
                               ),
@@ -178,7 +179,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                         Expanded(
                           child: Container(
                             width: double.infinity,
-                            color: Colors.white,
+                            color: AppTheme.background(context),
                             child: SingleChildScrollView(
                               padding: const EdgeInsets.all(24),
                               child: Column(
@@ -193,19 +194,19 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                       Expanded(
                                         child: Text(
                                           pet.name,
-                                          style: const TextStyle(
+                                          style: TextStyle(
                                             fontSize: 23,
                                             fontWeight: FontWeight.bold,
-                                            color: AppColors.textPrimary,
+                                            color: AppTheme.textPrimary(context),
                                           ),
                                         ),
                                       ),
                                       Text(
                                         '\$${'35'}',
-                                        style: const TextStyle(
+                                        style: TextStyle(
                                           fontSize: 23,
                                           fontWeight: FontWeight.bold,
-                                          color: AppColors.primary,
+                                          color: AppTheme.primary(context),
                                         ),
                                       ),
                                     ],
@@ -221,9 +222,9 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                       const SizedBox(width: 4),
                                       Text(
                                         pet.origin ?? 'Unknown location',
-                                        style: const TextStyle(
+                                        style: TextStyle(
                                           fontSize: 14,
-                                          color: AppColors.textSecondary,
+                                          color: AppTheme.textSecondary(context),
                                         ),
                                       ),
                                     ],
@@ -254,21 +255,20 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                     ],
                                   ),
                                   const SizedBox(height: 24),
-                                  const Text(
+                                  Text(
                                     'About:',
                                     style: TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold,
-                                      color: AppColors.textPrimary,
+                                      color: AppTheme.textPrimary(context),
                                     ),
                                   ),
                                   const SizedBox(height: 12),
                                   Text(
-                                    pet.description ??
-                                        'No description available',
-                                    style: const TextStyle(
+                                    pet.description ?? 'No description available',
+                                    style: TextStyle(
                                       fontSize: 14,
-                                      color: AppColors.textSecondary,
+                                      color: AppTheme.textSecondary(context),
                                       height: 1.6,
                                     ),
                                   ),
@@ -282,7 +282,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                             "Adopting ${pet.name}...");
                                       },
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: AppColors.primary,
+                                        backgroundColor: AppTheme.primary(context),
                                         shape: RoundedRectangleBorder(
                                           borderRadius:
                                           BorderRadius.circular(16),

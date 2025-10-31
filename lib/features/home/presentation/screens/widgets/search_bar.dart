@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../../core/utils/app_colors.dart';
+import '../../../../../core/theming/theme_data.dart';
 
 class CustomSearchBar extends StatelessWidget {
   final ValueChanged<String> onChanged;
@@ -12,13 +13,13 @@ class CustomSearchBar extends StatelessWidget {
     return Container(
       height: 50,
       decoration: BoxDecoration(
-        color: const Color(0xFFF5F5F5),
+        color: AppTheme.surface(context),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
         children: [
           const SizedBox(width: 16),
-          const Icon(Icons.search, color: AppColors.textSecondary),
+          Icon(Icons.search, color: AppTheme.textSecondary(context)),
           const SizedBox(width: 12),
           Expanded(
             child: TextField(

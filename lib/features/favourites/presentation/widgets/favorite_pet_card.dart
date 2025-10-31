@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../core/utils/app_colors.dart';
+import '../../../../core/theming/theme_data.dart';
 
 class FavoritePetCard extends StatelessWidget {
   final String name;
@@ -27,7 +27,7 @@ class FavoritePetCard extends StatelessWidget {
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppTheme.surface(context),
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
@@ -57,11 +57,11 @@ class FavoritePetCard extends StatelessWidget {
                     width: double.infinity,
                     height: double.infinity,
                     errorBuilder: (context, error, stackTrace) {
-                      return const Center(
+                      return Center(
                         child: Icon(
                           Icons.pets,
                           size: 50,
-                          color: AppColors.primary,
+                          color: AppTheme.primary(context),
                         ),
                       );
                     },
@@ -72,11 +72,11 @@ class FavoritePetCard extends StatelessWidget {
                     width: double.infinity,
                     height: double.infinity,
                     errorBuilder: (context, error, stackTrace) {
-                      return const Center(
+                      return Center(
                         child: Icon(
                           Icons.pets,
                           size: 50,
-                          color: AppColors.primary,
+                          color: AppTheme.primary(context),
                         ),
                       );
                     },
@@ -92,10 +92,10 @@ class FavoritePetCard extends StatelessWidget {
                 children: [
                   Text(
                     name,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: AppColors.textPrimary,
+                      color: AppTheme.textPrimary(context),
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -116,9 +116,9 @@ class FavoritePetCard extends StatelessWidget {
                       Expanded(
                         child: Text(
                           origin,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 12,
-                            color: AppColors.textSecondary,
+                            color: AppTheme.textSecondary(context),
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -131,7 +131,7 @@ class FavoritePetCard extends StatelessWidget {
                         onTap: onFavorite,
                         child: Icon(
                           isFavourite ? Icons.favorite : Icons.favorite_border,
-                          color: AppColors.primary,
+                          color: AppTheme.primary(context),
                           size: 20,
                         ),
                       ),

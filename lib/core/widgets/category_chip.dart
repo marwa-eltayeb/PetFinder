@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:petfinder/core/theming/theme_data.dart';
 
 import '../utils/app_colors.dart';
 
@@ -23,14 +24,14 @@ class CategoryChip extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           decoration: BoxDecoration(
-            color: isSelected ? AppColors.primary : const Color(0xFFF5F5F5),
+            color: isSelected ? AppTheme.primary(context) : AppTheme.surface(context),
             borderRadius: BorderRadius.circular(20),
           ),
           child: Center(
             child: Text(
               label,
               style: TextStyle(
-                color: isSelected ? Colors.white : AppColors.textSecondary,
+                color: isSelected ? Colors.white : AppTheme.textSecondary(context),
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
               ),
             ),

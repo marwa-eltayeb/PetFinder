@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../../core/utils/app_colors.dart';
+import 'package:petfinder/core/theming/theme_data.dart';
 import '../../../../../core/widgets/bottom_nav_bar.dart';
 import '../../../../../core/widgets/category_chip.dart';
 import '../../../../core/di/injection_container.dart';
@@ -60,19 +60,19 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
     return BlocProvider.value(
       value: _favouritesBloc,
       child: Scaffold(
-        backgroundColor: AppColors.background,
+        backgroundColor: AppTheme.background(context),
         body: SafeArea(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Padding(
+               Padding(
                 padding: EdgeInsets.all(16.0),
                 child: Text(
                   'Your Favourite Pets',
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.textPrimary,
+                    color: AppTheme.textPrimary(context),
                   ),
                 ),
               ),
@@ -121,7 +121,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
-                                color: AppColors.textPrimary,
+                                color: AppTheme.textPrimary(context),
                               ),
                             ),
                             const SizedBox(height: 8),
@@ -131,7 +131,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                                 state.message,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
-                                  color: AppColors.textSecondary,
+                                  color: AppTheme.textSecondary(context),
                                 ),
                               ),
                             ),
@@ -148,7 +148,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                               Icon(
                                 Icons.favorite_border,
                                 size: 64,
-                                color: AppColors.textSecondary,
+                                color: AppTheme.textSecondary(context),
                               ),
                               const SizedBox(height: 16),
                               Text(
@@ -156,14 +156,14 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
-                                  color: AppColors.textPrimary,
+                                  color: AppTheme.textPrimary(context),
                                 ),
                               ),
                               const SizedBox(height: 8),
                               Text(
                                 'Start adding pets to your favourites!',
                                 style: TextStyle(
-                                  color: AppColors.textSecondary,
+                                  color: AppTheme.textSecondary(context),
                                 ),
                               ),
                             ],

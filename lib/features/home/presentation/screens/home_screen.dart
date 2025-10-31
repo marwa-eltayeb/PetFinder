@@ -7,9 +7,10 @@ import 'package:petfinder/features/home/presentation/screens/widgets/filter_shee
 import 'package:petfinder/features/home/presentation/screens/widgets/pet_card.dart';
 import 'package:petfinder/features/home/presentation/screens/widgets/search_bar.dart';
 import '../../../../core/di/injection_container.dart';
-import '../../../../core/utils/app_colors.dart';
+import '../../../../core/presentation/cubit/theme_cubit.dart';
 import '../../../../core/utils/pet_type.dart';
 import '../../../../core/utils/snackbar_helper.dart';
+import '../../../../core/theming/theme_data.dart';
 import '../../../details/presentation/screens/details_screen.dart';
 import '../../../favourites/presentation/bloc/favorites_bloc.dart';
 import '../../../favourites/presentation/bloc/favorites_event.dart';
@@ -69,7 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
         BlocProvider(create: (_) => sl<FavouritesBloc>()..add(LoadFavouritesEvent(type: null))),
       ],
       child: Scaffold(
-        backgroundColor: AppColors.background,
+        backgroundColor: AppTheme.background(context),
         body: SafeArea(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -80,18 +81,29 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
+                    Text(
                       'Find Your Forever Pet',
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
-                        color: AppColors.textPrimary,
+                        color: AppTheme.textPrimary(context),
                       ),
                     ),
-                    IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.notifications_outlined),
+
+                    // Theme Toggle Button
+                    BlocBuilder<ThemeCubit, ThemeMode>(
+                      builder: (context, themeMode) {
+                        final isDark = themeMode == ThemeMode.dark;
+
+                        return IconButton(
+                          onPressed: () {
+                            sl<ThemeCubit>().toggleTheme();
+                          },
+                          icon: Icon(isDark ? Icons.light_mode : Icons.dark_mode),
+                        );
+                      },
                     ),
+
                   ],
                 ),
               ),
@@ -128,14 +140,14 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(height: 24),
 
               // Categories
-              const Padding(
+              Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.0),
                 child: Text(
                   'Categories',
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.textPrimary,
+                    color: AppTheme.textPrimary(context),
                   ),
                 ),
               ),

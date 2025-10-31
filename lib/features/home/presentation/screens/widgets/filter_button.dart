@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../core/theming/theme_data.dart';
+
 class FilterButton extends StatelessWidget {
   final VoidCallback onTap;
 
@@ -13,7 +15,7 @@ class FilterButton extends StatelessWidget {
         height: 50,
         width: 50,
         decoration: BoxDecoration(
-          color: const Color(0xFFF5F5F5),
+          color: AppTheme.surface(context),
           borderRadius: BorderRadius.circular(12),
         ),
         child: const Icon(Icons.tune),

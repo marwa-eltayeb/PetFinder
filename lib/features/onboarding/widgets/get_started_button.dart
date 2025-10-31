@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../core/utils/app_colors.dart';
+import '../../../core/theming/theme_data.dart';
 
 class GetStartedButton extends StatelessWidget {
   final VoidCallback onPressed;
@@ -19,7 +19,7 @@ class GetStartedButton extends StatelessWidget {
         borderRadius: BorderRadius.circular(28),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withOpacity(0.3),
+            color: AppTheme.primary(context).withOpacity(0.3),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -28,7 +28,7 @@ class GetStartedButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.primary,
+          backgroundColor: AppTheme.primary(context),
           foregroundColor: Colors.white,
           elevation: 0,
           shape: RoundedRectangleBorder(

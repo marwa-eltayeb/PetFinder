@@ -21,6 +21,8 @@ import '../../features/favourites/domain/use_cases/get_favourites_use_case.dart'
 import '../../features/favourites/domain/use_cases/add_favourite_use_case.dart';
 import '../../features/favourites/domain/use_cases/remove_favourite_use_case.dart';
 import '../network/dio_client.dart';
+import '../presentation/cubit/theme_cubit.dart';
+import '../theming/theme_service.dart';
 
 final sl = GetIt.instance;
 
@@ -36,6 +38,8 @@ Future<void> initCore() async {
   sl.registerLazySingleton(() => sharedPreferences);
   sl.registerLazySingleton(() => Dio());
   sl.registerLazySingleton(() => DioClient(sl()));
+  sl.registerLazySingleton<ThemeService>(() => ThemeService(sl<SharedPreferences>()),);
+  sl.registerLazySingleton<ThemeCubit>(() => ThemeCubit(sl<ThemeService>()),);
 }
 
 Future<void> initPetList() async {
