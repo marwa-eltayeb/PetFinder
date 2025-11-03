@@ -11,14 +11,18 @@ class PetRepositoryImpl implements PetRepository {
 
   @override
   Future<List<Pet>> getAllPets({int limit = 10, int page = 0}) async {
-    // Fetch both pet types in parallel for efficiency
+    // Fetch both pet types in parallel
     final results = await Future.wait([
       remoteDataSource.getPets(type: PetType.cat, limit: limit, page: page),
       remoteDataSource.getPets(type: PetType.dog, limit: limit, page: page),
     ]);
 
     // Merge and shuffle results
-    final allPets = results.expand((e) => e).toList()..shuffle(Random());
+    final allPets = results.expand((e) => e).toList();
+
+    // Shuffle with a seed based on page number for consistent pagination
+    final random = Random(page);
+    allPets.shuffle(random);
 
     return allPets;
   }

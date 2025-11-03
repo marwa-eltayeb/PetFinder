@@ -32,6 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String selectedCategory = 'All';
   late final PetListBloc _petListBloc;
   late final TextEditingController _searchController;
+  late final ScrollController _scrollController;
 
   final List<String> categories = [
     'All',
@@ -53,13 +54,42 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     _petListBloc = createPetListBloc();
     _searchController = TextEditingController();
+    _scrollController = ScrollController();
+    _scrollController.addListener(_onScroll);
   }
 
   @override
   void dispose() {
     _petListBloc.close();
     _searchController.dispose();
+    _scrollController.dispose();
     super.dispose();
+  }
+
+  // Detect when user scrolls near bottom
+  void _onScroll() {
+    if (_isBottom) {
+      final state = _petListBloc.state;
+
+      // Only load more if more data is available
+      if (state is PetListLoaded && state.hasMoreData) {
+        final type = selectedCategory == 'Cats'
+            ? PetType.cat
+            : selectedCategory == 'Dogs'
+            ? PetType.dog
+            : null;
+
+        _petListBloc.add(LoadMorePets(type: type));
+      }
+    }
+  }
+
+  // Check if scrolled to bottom
+  bool get _isBottom {
+    if (!_scrollController.hasClients) return false;
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.offset;
+    return currentScroll >= (maxScroll - 200);
   }
 
   @override
@@ -180,8 +210,16 @@ class _HomeScreenState extends State<HomeScreen> {
                       return const Center(
                         child: CircularProgressIndicator(strokeWidth: 2),
                       );
-                    } else if (petState is PetListLoaded) {
-                      final pets = petState.filteredPets;
+                    } else if (petState is PetListLoaded || petState is PetListLoadingMore) {
+                      final pets = petState is PetListLoaded ? petState.filteredPets
+                          : (petState as PetListLoadingMore).filteredPets;
+
+                      final hasMoreData = petState is PetListLoaded
+                          ? petState.hasMoreData
+                          : false;
+
+                      final isLoadingMore = petState is PetListLoadingMore;
+
                       if (pets.isEmpty) {
                         return const Center(child: Text('No pets found.'));
                       }
@@ -193,9 +231,21 @@ class _HomeScreenState extends State<HomeScreen> {
                               : [];
 
                           return ListView.builder(
+                            controller: _scrollController,
                             padding: const EdgeInsets.symmetric(horizontal: 16),
-                            itemCount: pets.length,
+                            itemCount: pets.length + (hasMoreData || isLoadingMore ? 1 : 0),
                             itemBuilder: (context, index) {
+
+                              // Show loading indicator at bottom
+                              if (index >= pets.length) {
+                                return const Padding(
+                                  padding: EdgeInsets.all(16.0),
+                                  child: Center(
+                                    child: CircularProgressIndicator(strokeWidth: 2),
+                                  ),
+                                );
+                              }
+
                               final Pet pet = pets[index];
                               final isFavourite = favourites.any((f) =>
                               f.imageId == pet.id && f.type == pet.type);

@@ -11,8 +11,22 @@ class PetListLoaded extends PetListState {
   final List<Pet> allPets;
   final List<Pet> filteredPets;
   final PetType? petType;
+  final bool hasMoreData;
 
   PetListLoaded({
+    required this.allPets,
+    required this.filteredPets,
+    this.petType,
+    this.hasMoreData = false,
+  });
+}
+
+class PetListLoadingMore extends PetListState {
+  final List<Pet> allPets;
+  final List<Pet> filteredPets;
+  final PetType? petType;
+
+  PetListLoadingMore({
     required this.allPets,
     required this.filteredPets,
     this.petType,
