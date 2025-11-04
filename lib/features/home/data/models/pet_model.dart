@@ -1,15 +1,41 @@
+import 'package:hive/hive.dart';
+
 import '../../domain/entities/pet.dart';
 import '../../../../core/utils/pet_type.dart';
 
-class PetModel extends Pet {
+part 'pet_model.g.dart';
+
+@HiveType(typeId: 0)
+class PetModel {
+
+  @HiveField(0)
+  final String id;
+
+  @HiveField(1)
+  final String name;
+
+  @HiveField(2)
+  final int typeIndex;
+
+  @HiveField(3)
+  final String? imageUrl;
+
+  @HiveField(4)
+  final String? origin;
+
+  @HiveField(5)
+  final String? temperament;
+
   PetModel({
-    required super.id,
-    required super.name,
-    required super.type,
-    super.imageUrl,
-    super.origin,
-    super.temperament,
+    required this.id,
+    required this.name,
+    required this.typeIndex,
+    this.imageUrl,
+    this.origin,
+    this.temperament,
   });
+
+  PetType get type => PetType.values[typeIndex];
 
   factory PetModel.fromJson(Map<String, dynamic> json, PetType type) {
     final imageId = json['reference_image_id'];
@@ -21,10 +47,33 @@ class PetModel extends Pet {
     return PetModel(
       id: json['id'].toString(),
       name: json['name'],
+      typeIndex: type.index,
       imageUrl: imageUrl,
       origin: json['origin'],
       temperament: json['temperament'],
-      type: type,
     );
   }
+
+  factory PetModel.fromEntity(Pet pet) {
+    return PetModel(
+      id: pet.id,
+      name: pet.name,
+      typeIndex: pet.type.index,
+      imageUrl: pet.imageUrl,
+      origin: pet.origin,
+      temperament: pet.temperament,
+    );
+  }
+
+  Pet toEntity() {
+    return Pet(
+      id: id,
+      name: name,
+      type: type,
+      imageUrl: imageUrl,
+      origin: origin,
+      temperament: temperament,
+    );
+  }
+
 }

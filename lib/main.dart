@@ -7,9 +7,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:petfinder/core/routing/app_route.dart';
 import 'package:petfinder/core/routing/routes.dart';
-
 import 'core/di/injection_container.dart';
 import 'core/presentation/cubit/theme_cubit.dart';
 import 'core/utils/config.dart';
@@ -18,6 +19,9 @@ import 'firebase_options.dart';
 
 void mainCommon(String environment) async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await Hive.initFlutter();
+
   await dotenv.load(fileName: ".env");
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);

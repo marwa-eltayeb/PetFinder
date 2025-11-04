@@ -320,6 +320,11 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() => selectedCategory = category);
     _searchController.clear();
 
+    // Reset scroll position to top
+    if (_scrollController.hasClients) {
+      _scrollController.jumpTo(0);
+    }
+
     PetType? type;
     if (category == 'Cats') type = PetType.cat;
     if (category == 'Dogs') type = PetType.dog;

@@ -3,28 +3,64 @@ import '../../domain/entities/pet.dart';
 import '../../domain/repositories/pet_repository.dart';
 import '../../../../core/utils/pet_type.dart';
 import '../datasources/pet_data_source.dart';
+import '../datasources/pet_local_data_source.dart';
 
 class PetRepositoryImpl implements PetRepository {
   final PetDataSource remoteDataSource;
+  final PetLocalDataSource localDataSource;
 
-  PetRepositoryImpl(this.remoteDataSource);
+  PetRepositoryImpl({
+    required this.remoteDataSource,
+    required this.localDataSource,
+  });
 
   @override
   Future<List<Pet>> getAllPets({int limit = 10, int page = 0}) async {
-    // Fetch both pet types in parallel
-    final results = await Future.wait([
-      remoteDataSource.getPets(type: PetType.cat, limit: limit, page: page),
-      remoteDataSource.getPets(type: PetType.dog, limit: limit, page: page),
-    ]);
+      // Get cached data first for both types
+      final cachedCats = await localDataSource.getCachedPets(
+        type: PetType.cat,
+        page: page,
+      );
+      final cachedDogs = await localDataSource.getCachedPets(
+        type: PetType.dog,
+        page: page,
+      );
 
-    // Merge and shuffle results
-    final allPets = results.expand((e) => e).toList();
+      // If cache exists for both types, return cached data immediately
+      if (cachedCats.isNotEmpty && cachedDogs.isNotEmpty) {
+        final allPets = [
+          ...cachedCats.map((model) => model.toEntity()),
+          ...cachedDogs.map((model) => model.toEntity()),
+        ];
+        // Shuffle with consistent seed for same results on same page
+        final random = Random(page);
+        allPets.shuffle(random);
+        return allPets;
+      }
 
-    // Shuffle with a seed based on page number for consistent pagination
-    final random = Random(page);
-    allPets.shuffle(random);
+      // If no complete cache, fetch fresh data from API
+      final results = await Future.wait([
+        remoteDataSource.getPets(type: PetType.cat, limit: limit, page: page),
+        remoteDataSource.getPets(type: PetType.dog, limit: limit, page: page),
+      ]);
 
-    return allPets;
+      final cats = results[0];
+      final dogs = results[1];
+
+      // Cache the freshly fetched data for future use
+      await Future.wait([
+        localDataSource.cachePets(pets: cats, type: PetType.cat, page: page),
+        localDataSource.cachePets(pets: dogs, type: PetType.dog, page: page),
+      ]);
+
+      // Combine and convert models to entities
+      final allPets = [...cats, ...dogs].map((model) => model.toEntity()).toList();
+
+      // Shuffle with consistent seed for same results on same page
+      final random = Random(page);
+      allPets.shuffle(random);
+
+      return allPets;
   }
 
   @override
@@ -33,6 +69,6 @@ class PetRepositoryImpl implements PetRepository {
       remoteDataSource.searchPets(PetType.cat, query),
       remoteDataSource.searchPets(PetType.dog, query),
     ]);
-    return results.expand((e) => e).toList();
+    return results.expand((models) => models).map((model) => model.toEntity()).toList();
   }
 }
