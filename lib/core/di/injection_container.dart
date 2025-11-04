@@ -30,6 +30,8 @@ import '../network/dio_client.dart';
 import '../presentation/cubit/theme_cubit.dart';
 import '../theming/theme_service.dart';
 
+export 'injection_container.dart' show initAll;
+
 final sl = GetIt.instance;
 
 Future<void> initAll() async {
