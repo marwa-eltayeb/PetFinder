@@ -49,3 +49,9 @@ app.*.map.json
 # Generated files
 *.g.dart
 *.mocks.dart
+
+# Flutter generated files
+**/generated_plugins.cmake
+**/GeneratedPluginRegistrant.swift
+**/generated_plugin_registrant.cc
+**/generated_plugin_registrant.h
