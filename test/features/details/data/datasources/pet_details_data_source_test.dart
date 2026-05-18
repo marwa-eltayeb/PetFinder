@@ -5,19 +5,19 @@ import 'package:dio/dio.dart';
 import 'package:petfinder/core/network/dio_client.dart';
 import 'package:petfinder/core/utils/api_constants.dart';
 import 'package:petfinder/core/utils/pet_type.dart';
-import 'package:petfinder/features/details/data/datasources/pet_details_data_source.dart';
+import 'package:petfinder/features/details/data/datasources/pet_details_remote_data_source.dart';
 import 'package:petfinder/features/details/data/models/pet_details_model.dart';
 
 import 'pet_details_data_source_test.mocks.dart';
 
 @GenerateMocks([DioClient])
 void main() {
-  late PetDetailsDataSourceImpl dataSource;
+  late PetDetailsRemoteDataSourceImpl dataSource;
   late MockDioClient mockDioClient;
 
   setUp(() {
     mockDioClient = MockDioClient();
-    dataSource = PetDetailsDataSourceImpl(mockDioClient);
+    dataSource = PetDetailsRemoteDataSourceImpl(mockDioClient);
   });
 
   group('getPetDetails', () {

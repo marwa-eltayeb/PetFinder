@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import '../../../../core/network/network_config.dart';
 import '../../../../core/utils/api_constants.dart';
 import '../../../../core/utils/pet_type.dart';
 import '../models/favourite_model.dart';
@@ -10,31 +11,15 @@ abstract class FavouritesRemoteDataSource {
 }
 
 class FavouritesDataSourceImpl implements FavouritesRemoteDataSource {
+
   final Dio dio;
-
   FavouritesDataSourceImpl(this.dio);
-
-  String _getBaseUrl(PetType type) {
-    return type == PetType.cat
-        ? ApiConstants.catBaseUrl
-        : ApiConstants.dogBaseUrl;
-  }
-
-  String _getApiKey(PetType type) {
-    return type == PetType.cat
-        ? ApiConstants.catApiKey
-        : ApiConstants.dogApiKey;
-  }
-
-  String _getFullFavouritesUrl(PetType type) {
-    return '${_getBaseUrl(type)}/v1/favourites';
-  }
 
   @override
   Future<List<FavouriteModel>> getFavourites(PetType type) async {
     try {
       final response = await dio.get(
-        '${_getFullFavouritesUrl(type)}?api_key=${_getApiKey(type)}',
+        '${_getFullFavouritesUrl(type)}?api_key=${NetworkConfig.getApiKey(type)}',
       );
 
       if (response.statusCode == 200 && response.data is List) {
@@ -65,7 +50,7 @@ class FavouritesDataSourceImpl implements FavouritesRemoteDataSource {
       final response = await dio.post(
         _getFullFavouritesUrl(type),
         options: Options(headers: {
-          'x-api-key': _getApiKey(type),
+          'x-api-key': NetworkConfig.getApiKey(type),
           'Content-Type': 'application/json',
         }),
         data: {'image_id': imageId, 'sub_id': subId},
@@ -93,7 +78,7 @@ class FavouritesDataSourceImpl implements FavouritesRemoteDataSource {
     try {
       final response = await dio.delete(
         '${_getFullFavouritesUrl(type)}/$favouriteId',
-        options: Options(headers: {'x-api-key': _getApiKey(type)}),
+        options: Options(headers: {'x-api-key': NetworkConfig.getApiKey(type)}),
       );
 
       if (response.statusCode != 200) {
@@ -104,5 +89,9 @@ class FavouritesDataSourceImpl implements FavouritesRemoteDataSource {
     } catch (e) {
       throw Exception('Error removing favourite: $e');
     }
+  }
+
+  String _getFullFavouritesUrl(PetType type) {
+    return '${NetworkConfig.getBaseUrl(type)}/v1/favourites';
   }
 }

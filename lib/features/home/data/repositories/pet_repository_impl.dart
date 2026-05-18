@@ -2,11 +2,11 @@ import 'dart:math';
 import '../../domain/entities/pet.dart';
 import '../../domain/repositories/pet_repository.dart';
 import '../../../../core/utils/pet_type.dart';
-import '../datasources/pet_data_source.dart';
+import '../datasources/pet_remote_data_source.dart';
 import '../datasources/pet_local_data_source.dart';
 
 class PetRepositoryImpl implements PetRepository {
-  final PetDataSource remoteDataSource;
+  final PetRemoteDataSource remoteDataSource;
   final PetLocalDataSource localDataSource;
 
   PetRepositoryImpl({

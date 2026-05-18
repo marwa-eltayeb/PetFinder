@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../features/details/data/datasources/pet_details_data_source.dart';
+import '../../features/details/data/datasources/pet_details_remote_data_source.dart';
 import '../../features/details/data/datasources/pet_details_local_data_source.dart';
 import '../../features/details/data/models/pet_details_model.dart';
 import '../../features/details/data/repositories/pet_details_repository_impl.dart';
@@ -15,7 +15,7 @@ import '../../features/favourites/data/datsources/favourites_remote_data_source.
 import '../../features/favourites/data/repositories/favourite_repository_impl.dart';
 import '../../features/favourites/domain/repositories/favourite_repository.dart';
 import '../../features/favourites/presentation/bloc/favorites_bloc.dart';
-import '../../features/home/data/datasources/pet_data_source.dart';
+import '../../features/home/data/datasources/pet_remote_data_source.dart';
 import '../../features/home/data/datasources/pet_local_data_source.dart';
 import '../../features/home/data/models/pet_model.dart';
 import '../../features/home/data/repositories/pet_repository_impl.dart';
@@ -60,7 +60,7 @@ Future<void> initCore() async {
 }
 
 Future<void> initPetList() async {
-  sl.registerLazySingleton<PetDataSource>(() => PetDataSourceImpl(sl()));
+  sl.registerLazySingleton<PetRemoteDataSource>(() => PetRemoteDataSourceImpl(sl()));
   sl.registerLazySingleton<PetLocalDataSource>(() => PetLocalDataSourceImpl(),);
   sl.registerLazySingleton<PetRepository>(() => PetRepositoryImpl(remoteDataSource: sl(), localDataSource: sl()));
   sl.registerLazySingleton(() => GetAllPetsUseCase(sl()));
@@ -69,7 +69,7 @@ Future<void> initPetList() async {
 }
 
 Future<void> initPetDetails() async {
-  sl.registerLazySingleton<PetDetailsDataSource>(() => PetDetailsDataSourceImpl(sl()));
+  sl.registerLazySingleton<PetDetailsRemoteDataSource>(() => PetDetailsRemoteDataSourceImpl(sl()));
   sl.registerLazySingleton<PetDetailsLocalDataSource>(() => PetDetailsLocalDataSourceImpl(),);
   sl.registerLazySingleton<PetDetailsRepository>(() => PetDetailsRepositoryImpl(remoteDataSource: sl(), localDataSource: sl()));
   sl.registerLazySingleton(() => GetPetDetailsUseCase(sl()));
