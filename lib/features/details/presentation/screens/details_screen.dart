@@ -7,7 +7,7 @@ import 'package:petfinder/core/utils/snackbar_helper.dart';
 import 'package:petfinder/features/details/presentation/bloc/pet_details_bloc.dart';
 import 'package:petfinder/features/details/presentation/bloc/pet_details_event.dart';
 import 'package:petfinder/features/details/presentation/bloc/pet_details_states.dart';
-import 'package:petfinder/features/details/presentation/screens/widgets/info_card.dart' show InfoCard;
+import 'package:petfinder/features/details/presentation/screens/widgets/info_card.dart';
 import 'package:petfinder/features/favourites/domain/entities/favourite_entity.dart';
 import 'package:petfinder/features/favourites/presentation/bloc/favorites_bloc.dart';
 import 'package:petfinder/features/favourites/presentation/bloc/favorites_event.dart';
