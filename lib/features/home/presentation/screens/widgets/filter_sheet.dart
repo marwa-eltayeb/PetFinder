@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'filter_section.dart';
-import '../../bloc/pet_list_bloc.dart';
-import '../../bloc/pet_list_event.dart';
+import 'package:petfinder/features/home/presentation/bloc/pet_list_bloc.dart';
+import 'package:petfinder/features/home/presentation/bloc/pet_list_event.dart';
+import 'package:petfinder/features/home/presentation/screens/widgets/filter_section.dart';
 
 class FilterSheet extends StatelessWidget {
   final List<String> origins;

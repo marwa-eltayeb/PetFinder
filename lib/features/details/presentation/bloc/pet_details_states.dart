@@ -1,4 +1,4 @@
-import '../../domain/entities/pet_details.dart';
+import 'package:petfinder/features/details/domain/entities/pet_details.dart';
 
 abstract class PetDetailsState {}
 class PetDetailsInitial extends PetDetailsState {}

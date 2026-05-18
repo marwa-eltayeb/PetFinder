@@ -1,6 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import '../models/pet_details_model.dart';
-import '../../../../core/utils/pet_type.dart';
+import 'package:petfinder/core/utils/pet_type.dart';
+import 'package:petfinder/features/details/data/models/pet_details_model.dart';
 
 abstract class PetDetailsLocalDataSource {
   Future<PetDetailsModel?> getCachedPetDetails({required PetType type, required String id,});
@@ -32,7 +33,7 @@ class PetDetailsLocalDataSourceImpl implements PetDetailsLocalDataSource {
       final key = _getCacheKey(type, id);
       return _box.get(key);
     } catch (e) {
-      print('Error getting cached pet details: $e');
+      debugPrint('Error getting cached pet details: $e');
       return null;
     }
   }
@@ -43,7 +44,7 @@ class PetDetailsLocalDataSourceImpl implements PetDetailsLocalDataSource {
       final key = _getCacheKey(petDetails.type, petDetails.id);
       await _box.put(key, petDetails);
     } catch (e) {
-      print('Error caching pet details: $e');
+      debugPrint('Error caching pet details: $e');
     }
   }
 
@@ -52,7 +53,7 @@ class PetDetailsLocalDataSourceImpl implements PetDetailsLocalDataSource {
     try {
       await _box.clear();
     } catch (e) {
-      print('Error clearing cache: $e');
+      debugPrint('Error clearing cache: $e');
     }
   }
 

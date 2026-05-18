@@ -1,5 +1,5 @@
-import '../repositories/favourite_repository.dart';
-import '../../../../core/utils/pet_type.dart';
+import 'package:petfinder/core/utils/pet_type.dart';
+import 'package:petfinder/features/favourites/domain/repositories/favourite_repository.dart';
 
 class RemoveFavouriteUseCase {
   final FavouritesRepository repository;

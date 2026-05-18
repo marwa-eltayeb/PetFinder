@@ -6,8 +6,6 @@ import 'package:petfinder/features/details/data/datasources/pet_details_remote_d
 import 'package:petfinder/features/details/data/datasources/pet_details_local_data_source.dart';
 import 'package:petfinder/features/details/data/models/pet_details_model.dart';
 import 'package:petfinder/features/details/data/repositories/pet_details_repository_impl.dart';
-import 'package:petfinder/features/details/domain/entities/pet_details.dart';
-
 import 'pet_details_repository_impl_test.mocks.dart';
 
 @GenerateMocks([PetDetailsRemoteDataSource, PetDetailsLocalDataSource])

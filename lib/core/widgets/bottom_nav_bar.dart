@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-
-import '../routing/routes.dart';
-import '../utils/app_colors.dart';
-import '../utils/snackbar_helper.dart';
-import '../theming/theme_data.dart';
+import 'package:petfinder/core/routing/routes.dart';
+import 'package:petfinder/core/theming/theme_data.dart';
+import 'package:petfinder/core/utils/snackbar_helper.dart';
 
 class BottomNavBar extends StatelessWidget {
   final int currentIndex;
@@ -20,7 +18,7 @@ class BottomNavBar extends StatelessWidget {
           color: AppTheme.surface(context),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha: 0.05),
               blurRadius: 10,
               offset: const Offset(0, -2),
             ),
@@ -70,11 +68,11 @@ class NavBarItem extends StatelessWidget {
   final VoidCallback onTap;
 
   const NavBarItem({
-    Key? key,
+    super.key,
     required this.icon,
     required this.isSelected,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../utils/app_colors.dart';
+import 'package:petfinder/core/utils/app_colors.dart';
 
 // Light Theme
 final ThemeData lightTheme = ThemeData(
@@ -7,8 +7,8 @@ final ThemeData lightTheme = ThemeData(
   colorScheme: const ColorScheme.light(
     primary: AppColors.lightPrimary,
     secondary: AppColors.lightTextSecondary,
-    background: AppColors.lightBackground,
-    surface: AppColors.lightSurface,
+    surface: AppColors.lightBackground,
+    surfaceContainer: AppColors.lightSurface,
   ),
   scaffoldBackgroundColor: AppColors.lightBackground,
   appBarTheme: const AppBarTheme(
@@ -28,8 +28,8 @@ final ThemeData darkTheme = ThemeData(
   colorScheme: const ColorScheme.dark(
     primary: AppColors.darkPrimary,
     secondary: AppColors.darkTextSecondary,
-    background: AppColors.darkBackground,
-    surface: AppColors.darkSurface,
+    surface: AppColors.darkBackground,
+    surfaceContainer: AppColors.darkSurface,
   ),
   scaffoldBackgroundColor: AppColors.darkBackground,
   appBarTheme: const AppBarTheme(
@@ -52,13 +52,10 @@ class AppTheme {
       Theme.of(context).colorScheme.secondary;
 
   static Color background(BuildContext context) =>
-      Theme.of(context).colorScheme.background;
+      Theme.of(context).colorScheme.surface;
 
-  static Color surface(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.dark
-        ? AppColors.darkSurface
-        : AppColors.lightSurface;
-  }
+  static Color surface(BuildContext context) =>
+      Theme.of(context).colorScheme.surfaceContainer;
 
   static Color textPrimary(BuildContext context) =>
       Theme.of(context).textTheme.bodyLarge?.color ?? Colors.black;

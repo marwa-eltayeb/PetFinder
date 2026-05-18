@@ -1,4 +1,4 @@
-import '../../domain/entities/favourite_entity.dart';
+import 'package:petfinder/features/favourites/domain/entities/favourite_entity.dart';
 
 abstract class FavouritesState {}
 

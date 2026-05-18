@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:petfinder/core/routing/routes.dart';
-import '../../features/details/presentation/screens/details_screen.dart';
-import '../../features/favourites/presentation/screens/favorites_screen.dart';
-import '../../features/home/presentation/screens/home_screen.dart';
-import '../../features/onboarding/onboarding_screen.dart';
-import '../utils/pet_type.dart';
+import 'package:petfinder/core/utils/pet_type.dart';
+import 'package:petfinder/features/details/presentation/screens/details_screen.dart';
+import 'package:petfinder/features/favourites/presentation/screens/favorites_screen.dart';
+import 'package:petfinder/features/home/presentation/screens/home_screen.dart';
+import 'package:petfinder/features/onboarding/onboarding_screen.dart';
 
 class AppRouter {
 

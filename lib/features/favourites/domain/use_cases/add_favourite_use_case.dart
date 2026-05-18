@@ -1,7 +1,6 @@
+import 'package:petfinder/core/utils/pet_type.dart';
 import 'package:petfinder/features/favourites/domain/entities/favourite_entity.dart';
-
-import '../repositories/favourite_repository.dart';
-import '../../../../core/utils/pet_type.dart';
+import 'package:petfinder/features/favourites/domain/repositories/favourite_repository.dart';
 
 class AddFavouriteUseCase {
   final FavouritesRepository repository;

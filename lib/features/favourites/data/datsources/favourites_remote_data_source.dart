@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import '../../../../core/network/network_config.dart';
-import '../../../../core/utils/api_constants.dart';
 import '../../../../core/utils/pet_type.dart';
 import '../models/favourite_model.dart';
 

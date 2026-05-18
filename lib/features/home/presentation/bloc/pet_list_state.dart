@@ -1,5 +1,5 @@
-import '../../domain/entities/pet.dart';
-import '../../../../core/utils/pet_type.dart';
+import 'package:petfinder/core/utils/pet_type.dart';
+import 'package:petfinder/features/home/domain/entities/pet.dart';
 
 abstract class PetListState {}
 

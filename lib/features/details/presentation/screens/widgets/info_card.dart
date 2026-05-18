@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import '../../../../../core/theming/theme_data.dart';
+import 'package:petfinder/core/theming/theme_data.dart';
 
 class InfoCard extends StatelessWidget {
   final String title;
   final String value;
 
   const InfoCard({
-    Key? key,
+    super.key,
     required this.title,
     required this.value,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

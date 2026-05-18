@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:petfinder/core/routing/routes.dart';
+import 'package:petfinder/core/theming/theme_data.dart';
 import 'package:petfinder/core/utils/config.dart';
 import 'package:petfinder/features/onboarding/widgets/get_started_button.dart';
 import 'package:petfinder/features/onboarding/widgets/pet_image_section.dart';
-import '../../core/theming/theme_data.dart';
 
 class OnboardingScreen extends StatelessWidget {
 

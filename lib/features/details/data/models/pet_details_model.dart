@@ -1,7 +1,6 @@
 import 'package:hive/hive.dart';
-
-import '../../../../core/utils/pet_type.dart';
-import '../../domain/entities/pet_details.dart';
+import 'package:petfinder/core/utils/pet_type.dart';
+import 'package:petfinder/features/details/domain/entities/pet_details.dart';
 
 part 'pet_details_model.g.dart';
 

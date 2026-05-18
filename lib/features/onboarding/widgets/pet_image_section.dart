@@ -4,9 +4,9 @@ class PetImageSection extends StatelessWidget {
   final String imagePath;
 
   const PetImageSection({
-    Key? key,
+    super.key,
     required this.imagePath,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

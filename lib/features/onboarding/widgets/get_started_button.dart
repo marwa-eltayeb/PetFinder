@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import '../../../core/theming/theme_data.dart';
+import 'package:petfinder/core/theming/theme_data.dart';
 
 class GetStartedButton extends StatelessWidget {
   final VoidCallback onPressed;
 
   const GetStartedButton({
-    Key? key,
+    super.key,
     required this.onPressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +19,7 @@ class GetStartedButton extends StatelessWidget {
         borderRadius: BorderRadius.circular(28),
         boxShadow: [
           BoxShadow(
-            color: AppTheme.primary(context).withOpacity(0.3),
+            color: AppTheme.primary(context).withValues(alpha: 0.3),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),

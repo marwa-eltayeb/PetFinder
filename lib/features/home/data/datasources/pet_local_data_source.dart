@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../models/pet_model.dart';
 import '../../../../core/utils/pet_type.dart';
@@ -37,7 +38,7 @@ class PetLocalDataSourceImpl implements PetLocalDataSource {
           .map((item) => item as PetModel)
           .toList();
     } catch (e) {
-      print('Error getting cached pets: $e');
+      debugPrint('Error getting cached pets: $e');
       return [];
     }
   }
@@ -48,7 +49,7 @@ class PetLocalDataSourceImpl implements PetLocalDataSource {
       final key = _getCacheKey(type, page);
       await _box.put(key, pets);
     } catch (e) {
-      print('Error caching pets: $e');
+      debugPrint('Error caching pets: $e');
     }
   }
 
@@ -57,7 +58,7 @@ class PetLocalDataSourceImpl implements PetLocalDataSource {
     try {
       await _box.clear();
     } catch (e) {
-      print('Error clearing cache: $e');
+      debugPrint('Error clearing cache: $e');
     }
   }
 

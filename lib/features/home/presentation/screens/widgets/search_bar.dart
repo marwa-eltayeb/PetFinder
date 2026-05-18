@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../../core/utils/app_colors.dart';
-import '../../../../../core/theming/theme_data.dart';
+import 'package:petfinder/core/theming/theme_data.dart';
 
 class CustomSearchBar extends StatelessWidget {
   final ValueChanged<String> onChanged;

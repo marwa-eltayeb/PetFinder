@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../../core/theming/theme_data.dart';
+import 'package:petfinder/core/theming/theme_data.dart';
 
 class PetCard extends StatelessWidget {
   final String name;
@@ -12,7 +12,7 @@ class PetCard extends StatelessWidget {
   final bool isFavourite;
 
   const PetCard({
-    Key? key,
+    super.key,
     required this.name,
     required this.image,
     required this.gender,
@@ -21,7 +21,7 @@ class PetCard extends StatelessWidget {
     required this.onTap,
     required this.onFavorite,
     required this.isFavourite,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +35,7 @@ class PetCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha: 0.05),
               blurRadius: 10,
               offset: const Offset(0, 2),
             ),

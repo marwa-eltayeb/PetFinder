@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:petfinder/core/di/injection_container.dart';
+import 'package:petfinder/core/routing/routes.dart';
 import 'package:petfinder/core/theming/theme_data.dart';
-import '../../../../../core/widgets/bottom_nav_bar.dart';
-import '../../../../../core/widgets/category_chip.dart';
-import '../../../../core/di/injection_container.dart';
-import '../../../../core/routing/routes.dart';
-import '../../../../core/utils/pet_type.dart';
-import '../bloc/favorites_bloc.dart';
-import '../bloc/favorites_event.dart';
-import '../bloc/favorites_state.dart';
-import '../widgets/favorite_pet_card.dart';
+import 'package:petfinder/core/utils/pet_type.dart';
+import 'package:petfinder/core/widgets/bottom_nav_bar.dart';
+import 'package:petfinder/core/widgets/category_chip.dart';
+import 'package:petfinder/features/favourites/presentation/bloc/favorites_bloc.dart';
+import 'package:petfinder/features/favourites/presentation/bloc/favorites_event.dart';
+import 'package:petfinder/features/favourites/presentation/bloc/favorites_state.dart';
+import 'package:petfinder/features/favourites/presentation/widgets/favorite_pet_card.dart';
 
 class FavoritesScreen extends StatefulWidget {
   const FavoritesScreen({super.key});

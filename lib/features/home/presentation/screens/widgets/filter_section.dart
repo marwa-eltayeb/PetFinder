@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'filter_chip_item.dart';
+import 'package:petfinder/features/home/presentation/screens/widgets/filter_chip_item.dart';
 
 class FilterSection extends StatelessWidget {
   final String title;

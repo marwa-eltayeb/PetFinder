@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../theming/theme_service.dart';
+import 'package:petfinder/core/theming/theme_service.dart';
 
 class ThemeCubit extends Cubit<ThemeMode> {
 

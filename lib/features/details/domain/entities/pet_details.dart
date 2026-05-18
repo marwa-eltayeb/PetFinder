@@ -1,4 +1,4 @@
-import '../../../../core/utils/pet_type.dart';
+import 'package:petfinder/core/utils/pet_type.dart';
 
 class PetDetails {
   final dynamic id;

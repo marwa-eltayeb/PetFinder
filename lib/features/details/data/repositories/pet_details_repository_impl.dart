@@ -1,8 +1,8 @@
-import '../../../../core/utils/pet_type.dart';
-import '../../domain/entities/pet_details.dart';
-import '../../domain/repositories/pet_details_repository.dart';
-import '../datasources/pet_details_remote_data_source.dart';
-import '../datasources/pet_details_local_data_source.dart';
+import 'package:petfinder/core/utils/pet_type.dart';
+import 'package:petfinder/features/details/data/datasources/pet_details_local_data_source.dart';
+import 'package:petfinder/features/details/data/datasources/pet_details_remote_data_source.dart';
+import 'package:petfinder/features/details/domain/entities/pet_details.dart';
+import 'package:petfinder/features/details/domain/repositories/pet_details_repository.dart';
 
 class PetDetailsRepositoryImpl implements PetDetailsRepository {
   final PetDetailsRemoteDataSource remoteDataSource;

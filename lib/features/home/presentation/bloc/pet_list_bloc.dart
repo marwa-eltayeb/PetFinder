@@ -1,9 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:petfinder/features/home/domain/entities/pet.dart';
+import 'package:petfinder/features/home/domain/use_cases/get_all_pets_use_case.dart';
 import 'package:petfinder/features/home/domain/use_cases/search_pets_use_case.dart';
-import 'pet_list_event.dart';
-import 'pet_list_state.dart';
-import '../../domain/use_cases/get_all_pets_use_case.dart';
-import '../../domain/entities/pet.dart';
+import 'package:petfinder/features/home/presentation/bloc/pet_list_event.dart';
+import 'package:petfinder/features/home/presentation/bloc/pet_list_state.dart';
 
 class PetListBloc extends Bloc<PetListEvent, PetListState> {
   final GetAllPetsUseCase getAllPets;

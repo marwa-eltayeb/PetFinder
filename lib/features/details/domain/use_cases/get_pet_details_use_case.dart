@@ -1,6 +1,6 @@
-import '../entities/pet_details.dart';
-import '../../../../core/utils/pet_type.dart';
-import '../repositories/pet_details_repository.dart';
+import 'package:petfinder/core/utils/pet_type.dart';
+import 'package:petfinder/features/details/domain/entities/pet_details.dart';
+import 'package:petfinder/features/details/domain/repositories/pet_details_repository.dart';
 
 class GetPetDetailsUseCase {
   final PetDetailsRepository repository;

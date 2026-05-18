@@ -1,10 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../domain/use_cases/get_favourites_use_case.dart';
-import '../../domain/use_cases/add_favourite_use_case.dart';
-import '../../domain/use_cases/remove_favourite_use_case.dart';
-import '../../../../core/utils/pet_type.dart';
-import 'favorites_event.dart';
-import 'favorites_state.dart';
+import 'package:petfinder/core/utils/pet_type.dart';
+import 'package:petfinder/features/favourites/domain/use_cases/add_favourite_use_case.dart';
+import 'package:petfinder/features/favourites/domain/use_cases/get_favourites_use_case.dart';
+import 'package:petfinder/features/favourites/domain/use_cases/remove_favourite_use_case.dart';
+import 'package:petfinder/features/favourites/presentation/bloc/favorites_event.dart';
+import 'package:petfinder/features/favourites/presentation/bloc/favorites_state.dart';
 
 class FavouritesBloc extends Bloc<FavouritesEvent, FavouritesState> {
   final GetFavouritesUseCase getFavouritesUseCase;
