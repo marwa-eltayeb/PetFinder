@@ -3,6 +3,7 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:dio/dio.dart';
 import 'package:petfinder/core/network/dio_client.dart';
+import 'package:petfinder/core/network/network_config.dart';
 import 'package:petfinder/core/utils/api_constants.dart';
 import 'package:petfinder/core/utils/pet_type.dart';
 import 'package:petfinder/features/details/data/datasources/pet_details_remote_data_source.dart';
@@ -30,9 +31,7 @@ void main() {
       'temperament': 'Calm, Friendly',
       'description': 'A beautiful long-haired cat breed',
       'reference_image_id': 'test',
-      'weight': {
-        'metric': '3-5',
-      },
+      'weight': {'metric': '3-5'},
       'life_span': '12-17 years',
     };
 
@@ -41,6 +40,7 @@ void main() {
       when(mockDioClient.get(
         ApiConstants.catBaseUrl,
         '${ApiConstants.breeds}/$tId',
+        headers: {'x-api-key': NetworkConfig.getApiKey(tPetType)},
       )).thenAnswer((_) async => Response(
         data: tResponseData,
         statusCode: 200,
@@ -55,6 +55,7 @@ void main() {
       verify(mockDioClient.get(
         ApiConstants.catBaseUrl,
         '${ApiConstants.breeds}/$tId',
+        headers: {'x-api-key': NetworkConfig.getApiKey(tPetType)},
       ));
       verifyNoMoreInteractions(mockDioClient);
     });
@@ -64,6 +65,7 @@ void main() {
       when(mockDioClient.get(
         ApiConstants.catBaseUrl,
         '${ApiConstants.breeds}/$tId',
+        headers: {'x-api-key': NetworkConfig.getApiKey(tPetType)},
       )).thenThrow(DioException(
         requestOptions: RequestOptions(path: ''),
         response: Response(
@@ -85,6 +87,7 @@ void main() {
       when(mockDioClient.get(
         ApiConstants.dogBaseUrl,
         '${ApiConstants.breeds}/$tId',
+        headers: {'x-api-key': NetworkConfig.getApiKey(tDogType)},
       )).thenAnswer((_) async => Response(
         data: tResponseData,
         statusCode: 200,
@@ -98,6 +101,7 @@ void main() {
       verify(mockDioClient.get(
         ApiConstants.dogBaseUrl,
         '${ApiConstants.breeds}/$tId',
+        headers: {'x-api-key': NetworkConfig.getApiKey(tDogType)},
       ));
     });
   });
