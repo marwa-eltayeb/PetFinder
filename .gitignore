@@ -55,3 +55,6 @@ app.*.map.json
 **/GeneratedPluginRegistrant.swift
 **/generated_plugin_registrant.cc
 **/generated_plugin_registrant.h
+
+# DevTools
+devtools_options.yaml
