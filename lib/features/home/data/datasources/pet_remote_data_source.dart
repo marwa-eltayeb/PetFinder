@@ -1,10 +1,8 @@
-import 'package:flutter/cupertino.dart';
-
-import '../../../../core/network/dio_client.dart';
-import '../../../../core/network/network_config.dart';
-import '../../../../core/utils/api_constants.dart';
-import '../../../../core/utils/pet_type.dart';
-import '../models/pet_model.dart';
+import 'package:petfinder/core/network/dio_client.dart';
+import 'package:petfinder/core/network/network_config.dart';
+import 'package:petfinder/core/utils/api_constants.dart';
+import 'package:petfinder/core/utils/pet_type.dart';
+import 'package:petfinder/features/home/data/models/pet_model.dart';
 
 abstract class PetRemoteDataSource {
   Future<List<PetModel>> getPets({required PetType type, int limit = 10, int page = 0,});
@@ -18,15 +16,12 @@ class PetRemoteDataSourceImpl implements PetRemoteDataSource {
 
   @override
   Future<List<PetModel>> getPets({required PetType type, int limit = 10, int page = 0,}) async {
-
-    debugPrint('API Key: ${NetworkConfig.getApiKey(type)}');
-    debugPrint('URL: ${NetworkConfig.getBaseUrl(type)}${ApiConstants.breeds}?limit=$limit&page=$page&api_key=${NetworkConfig.getApiKey(type)}');
-
     final response = await client.get(
       NetworkConfig.getBaseUrl(type),
-      '${ApiConstants.breeds}?limit=$limit&page=$page&api_key=${NetworkConfig.getApiKey(type)}',
+      ApiConstants.breeds,
+      queryParams: {'limit': limit, 'page': page},
+      headers: {'x-api-key': NetworkConfig.getApiKey(type)},
     );
-
     final List data = response.data;
     return data.map((json) => PetModel.fromJson(json, type)).toList();
   }
@@ -35,7 +30,9 @@ class PetRemoteDataSourceImpl implements PetRemoteDataSource {
   Future<List<PetModel>> searchPets(PetType type, String query) async {
     final response = await client.get(
       NetworkConfig.getBaseUrl(type),
-      '${ApiConstants.breeds}/search?q=$query&attach_image=1&api_key=${NetworkConfig.getApiKey(type)}',
+      '${ApiConstants.breeds}/search',
+      queryParams: {'q': query, 'attach_image': 1},
+      headers: {'x-api-key': NetworkConfig.getApiKey(type)},
     );
     final List data = response.data;
     return data.map((json) => PetModel.fromJson(json, type)).toList();

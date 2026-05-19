@@ -1,7 +1,8 @@
 import 'package:dio/dio.dart';
-import '../../../../core/network/network_config.dart';
-import '../../../../core/utils/pet_type.dart';
-import '../models/favourite_model.dart';
+import 'package:petfinder/core/network/dio_client.dart';
+import 'package:petfinder/core/network/network_config.dart';
+import 'package:petfinder/core/utils/pet_type.dart';
+import 'package:petfinder/features/favourites/data/models/favourite_model.dart';
 
 abstract class FavouritesRemoteDataSource {
   Future<List<FavouriteModel>> getFavourites(PetType type);
@@ -11,14 +12,15 @@ abstract class FavouritesRemoteDataSource {
 
 class FavouritesDataSourceImpl implements FavouritesRemoteDataSource {
 
-  final Dio dio;
-  FavouritesDataSourceImpl(this.dio);
+  final DioClient client;
+  FavouritesDataSourceImpl(this.client);
 
   @override
   Future<List<FavouriteModel>> getFavourites(PetType type) async {
     try {
-      final response = await dio.get(
-        '${_getFullFavouritesUrl(type)}?api_key=${NetworkConfig.getApiKey(type)}',
+      final response = await client.dio.get(
+        _getFullFavouritesUrl(type),
+        options: Options(headers: {'x-api-key': NetworkConfig.getApiKey(type)}),
       );
 
       if (response.statusCode == 200 && response.data is List) {
@@ -46,7 +48,7 @@ class FavouritesDataSourceImpl implements FavouritesRemoteDataSource {
   Future<FavouriteModel> addFavourite(
       PetType type, String imageId, String subId) async {
     try {
-      final response = await dio.post(
+      final response = await client.dio.post(
         _getFullFavouritesUrl(type),
         options: Options(headers: {
           'x-api-key': NetworkConfig.getApiKey(type),
@@ -75,7 +77,7 @@ class FavouritesDataSourceImpl implements FavouritesRemoteDataSource {
   @override
   Future<void> removeFavourite(PetType type, int favouriteId) async {
     try {
-      final response = await dio.delete(
+      final response = await client.dio.delete(
         '${_getFullFavouritesUrl(type)}/$favouriteId',
         options: Options(headers: {'x-api-key': NetworkConfig.getApiKey(type)}),
       );

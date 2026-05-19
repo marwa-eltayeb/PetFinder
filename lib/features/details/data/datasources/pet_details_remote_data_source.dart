@@ -16,9 +16,9 @@ class PetDetailsRemoteDataSourceImpl implements PetDetailsRemoteDataSource {
   Future<PetDetailsModel> getPetDetails(PetType type, dynamic id) async {
     final response = await client.get(
       NetworkConfig.getBaseUrl(type),
-      '${ApiConstants.breeds}/$id?api_key=${NetworkConfig.getApiKey(type)}',
+      '${ApiConstants.breeds}/$id',
+      headers: {'x-api-key': NetworkConfig.getApiKey(type)},
     );
-
     return PetDetailsModel.fromJson(type, response.data);
   }
 }

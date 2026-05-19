@@ -5,8 +5,17 @@ class DioClient {
 
   DioClient(this.dio);
 
-  Future<Response> get(String baseUrl, String endpoint, {Map<String, dynamic>? queryParams}) async {
-    final response = await dio.get('$baseUrl$endpoint', queryParameters: queryParams);
+  Future<Response> get(
+    String baseUrl,
+    String endpoint, {
+    Map<String, dynamic>? queryParams,
+    Map<String, dynamic>? headers,
+  }) async {
+    final response = await dio.get(
+      '$baseUrl$endpoint',
+      queryParameters: queryParams,
+      options: Options(headers: headers),
+    );
     return response;
   }
 }
