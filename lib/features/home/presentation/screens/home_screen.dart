@@ -49,6 +49,14 @@ class _HomeScreenState extends State<HomeScreen> {
     return bloc;
   }
 
+  PetType? _getTypeFromCategory(String category) {
+    return category == 'Cats'
+        ? PetType.cat
+        : category == 'Dogs'
+        ? PetType.dog
+        : null;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -66,25 +74,16 @@ class _HomeScreenState extends State<HomeScreen> {
     super.dispose();
   }
 
-  // Detect when user scrolls near bottom
   void _onScroll() {
     if (_isBottom) {
       final state = _petListBloc.state;
-
-      // Only load more if more data is available
       if (state is PetListLoaded && state.hasMoreData) {
-        final type = selectedCategory == 'Cats'
-            ? PetType.cat
-            : selectedCategory == 'Dogs'
-            ? PetType.dog
-            : null;
-
+        final type = _getTypeFromCategory(selectedCategory);
         _petListBloc.add(LoadMorePets(type: type));
       }
     }
   }
 
-  // Check if scrolled to bottom
   bool get _isBottom {
     if (!_scrollController.hasClients) return false;
     final maxScroll = _scrollController.position.maxScrollExtent;
@@ -146,11 +145,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     Expanded(
                       child: CustomSearchBar(
                         onChanged: (query) {
-                          final type = selectedCategory == 'Cats'
-                              ? PetType.cat
-                              : selectedCategory == 'Dogs'
-                              ? PetType.dog
-                              : null;
+                          final type = _getTypeFromCategory(selectedCategory);
 
                           if (query.isEmpty) {
                             _petListBloc.add(LoadPets(type: type));
@@ -224,19 +219,22 @@ class _HomeScreenState extends State<HomeScreen> {
                         return const Center(child: Text('No pets found.'));
                       }
 
-                      return BlocBuilder<FavouritesBloc, FavouritesState>(
-                        builder: (context, favState) {
-                          final favourites = favState is FavouritesLoaded
-                              ? favState.favourites
-                              : [];
-
+                      return BlocSelector<FavouritesBloc, FavouritesState, Set<String>>(
+                        selector: (state) {
+                          if (state is FavouritesLoaded) {
+                            return state.favourites
+                                .map((f) => '${f.imageId}_${f.type.index}')
+                                .toSet();
+                          }
+                          return <String>{};
+                        },
+                        builder: (context, favouriteIds) {
                           return ListView.builder(
                             controller: _scrollController,
                             padding: const EdgeInsets.symmetric(horizontal: 16),
                             itemCount: pets.length + (hasMoreData || isLoadingMore ? 1 : 0),
                             itemBuilder: (context, index) {
 
-                              // Show loading indicator at bottom
                               if (index >= pets.length) {
                                 return const Padding(
                                   padding: EdgeInsets.all(16.0),
@@ -247,8 +245,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               }
 
                               final Pet pet = pets[index];
-                              final isFavourite = favourites.any((f) =>
-                              f.imageId == pet.id && f.type == pet.type);
+                              final isFavourite = favouriteIds.contains('${pet.id}_${pet.type.index}');
 
                               return PetCard(
                                 name: pet.name,
@@ -271,16 +268,20 @@ class _HomeScreenState extends State<HomeScreen> {
                                 onFavorite: () {
                                   final favBloc = context.read<FavouritesBloc>();
                                   if (isFavourite) {
-                                    // Find the favourite to remove
-                                    final favourite = favourites.firstWhere((f) => f.imageId == pet.id && f.type == pet.type,);
-                                    favBloc.add(RemoveFavouriteEvent(
-                                      type: pet.type,
-                                      favouriteId: favourite.id,
-                                    ));
-                                    SnackBarHelper.showInfo(
-                                      context,
-                                      '${pet.name} removed from favourites',
-                                    );
+                                    final state = favBloc.state;
+                                    if (state is FavouritesLoaded) {
+                                      final favourite = state.favourites.firstWhere(
+                                        (f) => f.imageId == pet.id && f.type == pet.type,
+                                      );
+                                      favBloc.add(RemoveFavouriteEvent(
+                                        type: pet.type,
+                                        favouriteId: favourite.id,
+                                      ));
+                                      SnackBarHelper.showInfo(
+                                        context,
+                                        '${pet.name} removed from favourites',
+                                      );
+                                    }
                                   } else {
                                     favBloc.add(AddFavouriteEvent(
                                       type: pet.type,
