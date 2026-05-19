@@ -11,11 +11,12 @@ import 'pet_details_repository_impl_test.mocks.dart';
 @GenerateMocks([PetDetailsRemoteDataSource, PetDetailsLocalDataSource])
 void main() {
   late PetDetailsRepositoryImpl repository;
-  late MockPetDetailsDataSource mockRemoteDataSource;
+  late MockPetDetailsRemoteDataSource mockRemoteDataSource;
   late MockPetDetailsLocalDataSource mockLocalDataSource;
 
+
   setUp(() {
-    mockRemoteDataSource = MockPetDetailsDataSource();
+    mockRemoteDataSource = MockPetDetailsRemoteDataSource();
     mockLocalDataSource = MockPetDetailsLocalDataSource();
     repository = PetDetailsRepositoryImpl(
       remoteDataSource: mockRemoteDataSource,
