@@ -1,9 +1,11 @@
 import 'dart:math';
-import '../../domain/entities/pet.dart';
-import '../../domain/repositories/pet_repository.dart';
-import '../../../../core/utils/pet_type.dart';
-import '../datasources/pet_remote_data_source.dart';
-import '../datasources/pet_local_data_source.dart';
+import 'package:dio/dio.dart';
+import 'package:petfinder/core/network/failures.dart';
+import 'package:petfinder/core/utils/pet_type.dart';
+import 'package:petfinder/features/home/data/datasources/pet_local_data_source.dart';
+import 'package:petfinder/features/home/data/datasources/pet_remote_data_source.dart';
+import 'package:petfinder/features/home/domain/entities/pet.dart';
+import 'package:petfinder/features/home/domain/repositories/pet_repository.dart';
 
 class PetRepositoryImpl implements PetRepository {
   final PetRemoteDataSource remoteDataSource;
@@ -16,6 +18,7 @@ class PetRepositoryImpl implements PetRepository {
 
   @override
   Future<List<Pet>> getAllPets({int limit = 10, int page = 0}) async {
+    try {
       // Get cached data first for both types
       final cachedCats = await localDataSource.getCachedPets(
         type: PetType.cat,
@@ -61,14 +64,21 @@ class PetRepositoryImpl implements PetRepository {
       allPets.shuffle(random);
 
       return allPets;
+    } on DioException catch (e) {
+      throw ServerFailure.fromDioException(dioException: e);
+    }
   }
 
   @override
   Future<List<Pet>> searchPets(String query) async {
-    final results = await Future.wait([
-      remoteDataSource.searchPets(PetType.cat, query),
-      remoteDataSource.searchPets(PetType.dog, query),
-    ]);
-    return results.expand((models) => models).map((model) => model.toEntity()).toList();
+    try {
+      final results = await Future.wait([
+        remoteDataSource.searchPets(PetType.cat, query),
+        remoteDataSource.searchPets(PetType.dog, query),
+      ]);
+      return results.expand((models) => models).map((model) => model.toEntity()).toList();
+    } on DioException catch (e) {
+      throw ServerFailure.fromDioException(dioException: e);
+    }
   }
 }

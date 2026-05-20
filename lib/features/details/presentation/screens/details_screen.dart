@@ -4,6 +4,7 @@ import 'package:petfinder/core/di/injection_container.dart';
 import 'package:petfinder/core/theming/theme_data.dart';
 import 'package:petfinder/core/utils/pet_type.dart';
 import 'package:petfinder/core/utils/snackbar_helper.dart';
+import 'package:petfinder/core/widgets/error_state_view.dart';
 import 'package:petfinder/features/details/presentation/bloc/pet_details_bloc.dart';
 import 'package:petfinder/features/details/presentation/bloc/pet_details_event.dart';
 import 'package:petfinder/features/details/presentation/bloc/pet_details_states.dart';
@@ -308,11 +309,9 @@ class _DetailsScreenState extends State<DetailsScreen> {
                   },
                 );
               } else if (petState is PetDetailsError) {
-                return Center(
-                  child: Text(
-                    'Error: ${petState.message}',
-                    style: const TextStyle(color: Colors.red),
-                  ),
+                return ErrorStateView(
+                  message: petState.message,
+                  onRetry: () => context.read<PetDetailsBloc>().add(LoadPetDetails(widget.type, widget.petId)),
                 );
               }
               return const SizedBox.shrink();

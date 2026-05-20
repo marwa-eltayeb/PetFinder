@@ -17,82 +17,47 @@ class FavouritesDataSourceImpl implements FavouritesRemoteDataSource {
 
   @override
   Future<List<FavouriteModel>> getFavourites(PetType type) async {
-    try {
-      final response = await client.dio.get(
-        _getFullFavouritesUrl(type),
-        options: Options(headers: {'x-api-key': NetworkConfig.getApiKey(type)}),
-      );
+    final response = await client.get(
+      NetworkConfig.getBaseUrl(type),
+      '/v1/favourites',
+      headers: {'x-api-key': NetworkConfig.getApiKey(type)},
+    );
 
-      if (response.statusCode == 200 && response.data is List) {
-        final List data = response.data;
-
-        return data.map((json) {
-          return FavouriteModel(
-            id: json['id'] is int ? json['id'] : int.tryParse(json['id'].toString()) ?? 0,
-            imageId: json['image_id'] ?? '',
-            subId: json['sub_id'],
-            type: type,
-          );
-        }).toList();
-      } else {
-        throw Exception(
-          'Failed to load favourites: ${response.statusCode} ${response.statusMessage}',
-        );
-      }
-    } catch (e) {
-      throw Exception('Error fetching favourites: $e');
-    }
+    final List data = response.data;
+    return data.map((json) => FavouriteModel(
+      id: json['id'] is int ? json['id'] : int.tryParse(json['id'].toString()) ?? 0,
+      imageId: json['image_id'] ?? '',
+      subId: json['sub_id'],
+      type: type,
+    )).toList();
   }
 
   @override
-  Future<FavouriteModel> addFavourite(
-      PetType type, String imageId, String subId) async {
-    try {
-      final response = await client.dio.post(
-        _getFullFavouritesUrl(type),
-        options: Options(headers: {
-          'x-api-key': NetworkConfig.getApiKey(type),
-          'Content-Type': 'application/json',
-        }),
-        data: {'image_id': imageId, 'sub_id': subId},
-      );
+  Future<FavouriteModel> addFavourite(PetType type, String imageId, String subId) async {
+    final response = await client.post(
+      NetworkConfig.getBaseUrl(type),
+      '/v1/favourites',
+      data: {'image_id': imageId, 'sub_id': subId},
+      headers: {
+        'x-api-key': NetworkConfig.getApiKey(type),
+        'Content-Type': 'application/json',
+      },
+    );
 
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        return FavouriteModel(
-          id: response.data['id'] is int ? response.data['id'] : int.tryParse(response.data['id'].toString()) ?? 0,
-          imageId: imageId,
-          subId: subId,
-          type: type,
-        );
-      } else {
-        throw Exception(
-          'Failed to add favourite: ${response.statusCode} ${response.statusMessage}',
-        );
-      }
-    } catch (e) {
-      throw Exception('Error adding favourite: $e');
-    }
+    return FavouriteModel(
+      id: response.data['id'] is int ? response.data['id'] : int.tryParse(response.data['id'].toString()) ?? 0,
+      imageId: imageId,
+      subId: subId,
+      type: type,
+    );
   }
 
   @override
   Future<void> removeFavourite(PetType type, int favouriteId) async {
-    try {
-      final response = await client.dio.delete(
-        '${_getFullFavouritesUrl(type)}/$favouriteId',
-        options: Options(headers: {'x-api-key': NetworkConfig.getApiKey(type)}),
+      await client.delete(
+        NetworkConfig.getBaseUrl(type),
+        '/v1/favourites/$favouriteId',
+        headers: {'x-api-key': NetworkConfig.getApiKey(type)},
       );
-
-      if (response.statusCode != 200) {
-        throw Exception(
-          'Failed to remove favourite: ${response.statusCode} ${response.statusMessage}',
-        );
-      }
-    } catch (e) {
-      throw Exception('Error removing favourite: $e');
-    }
-  }
-
-  String _getFullFavouritesUrl(PetType type) {
-    return '${NetworkConfig.getBaseUrl(type)}/v1/favourites';
   }
 }

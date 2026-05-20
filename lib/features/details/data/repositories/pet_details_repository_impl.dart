@@ -1,3 +1,5 @@
+import 'package:dio/dio.dart';
+import 'package:petfinder/core/network/failures.dart';
 import 'package:petfinder/core/utils/pet_type.dart';
 import 'package:petfinder/features/details/data/datasources/pet_details_local_data_source.dart';
 import 'package:petfinder/features/details/data/datasources/pet_details_remote_data_source.dart';
@@ -15,20 +17,22 @@ class PetDetailsRepositoryImpl implements PetDetailsRepository {
 
   @override
   Future<PetDetails> getPetDetails(PetType type, dynamic id) async {
+    try {
+      // Get from cache first
+      final cached = await localDataSource.getCachedPetDetails(type: type, id: id.toString(),);
 
-    // Get from cache first
-    final cached = await localDataSource.getCachedPetDetails(type: type, id: id.toString(),);
+      // Convert model to entity if cached
+      if (cached != null) {return  cached.toEntity();}
 
-    // Convert model to entity if cached
-    if (cached != null) {return  cached.toEntity();}
+      // If no cache, fetch from API
+      final petDetails = await remoteDataSource.getPetDetails(type, id);
 
-    // If no cache, fetch from API
-    final petDetails = await remoteDataSource.getPetDetails(type, id);
+      // Cache the fetched data
+      await localDataSource.cachePetDetails(petDetails: petDetails);
 
-    // Cache the fetched data
-    await localDataSource.cachePetDetails(petDetails: petDetails);
-
-    return petDetails.toEntity();
+      return petDetails.toEntity();
+    } on DioException catch (e) {
+      throw ServerFailure.fromDioException(dioException: e);
+    }
   }
-
 }

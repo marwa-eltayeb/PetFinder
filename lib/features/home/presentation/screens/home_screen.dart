@@ -7,6 +7,7 @@ import 'package:petfinder/core/utils/pet_type.dart';
 import 'package:petfinder/core/utils/snackbar_helper.dart';
 import 'package:petfinder/core/widgets/bottom_nav_bar.dart';
 import 'package:petfinder/core/widgets/category_chip.dart';
+import 'package:petfinder/core/widgets/error_state_view.dart';
 import 'package:petfinder/features/details/presentation/screens/details_screen.dart';
 import 'package:petfinder/features/favourites/presentation/bloc/favorites_bloc.dart';
 import 'package:petfinder/features/favourites/presentation/bloc/favorites_event.dart';
@@ -330,7 +331,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         },
                       );
                     } else if (petState is PetListError) {
-                      return Center(child: Text('Error: ${petState.message}'));
+                      return ErrorStateView(
+                        message: petState.message,
+                        onRetry: () => context.read<PetListBloc>().add(LoadPets()),
+                      );
                     }
                     return const SizedBox.shrink();
                   },

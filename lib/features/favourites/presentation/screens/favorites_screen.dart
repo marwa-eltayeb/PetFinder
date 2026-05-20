@@ -11,6 +11,9 @@ import 'package:petfinder/features/favourites/presentation/bloc/favorites_event.
 import 'package:petfinder/features/favourites/presentation/bloc/favorites_state.dart';
 import 'package:petfinder/features/favourites/presentation/widgets/favorite_pet_card.dart';
 
+import '../../../../core/widgets/error_state_view.dart';
+
+
 class FavoritesScreen extends StatefulWidget {
   const FavoritesScreen({super.key});
 
@@ -106,37 +109,9 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                     if (state is FavouritesLoading) {
                       return const Center(child: CircularProgressIndicator());
                     } else if (state is FavouritesError) {
-                      return Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(
-                              Icons.error_outline,
-                              size: 64,
-                              color: Colors.red,
-                            ),
-                            const SizedBox(height: 16),
-                            Text(
-                              'Error loading favourites',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: AppTheme.textPrimary(context),
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 32),
-                              child: Text(
-                                state.message,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: AppTheme.textSecondary(context),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                      return ErrorStateView(
+                        message: state.message,
+                        onRetry: () => context.read<FavouritesBloc>().add(LoadFavouritesEvent(type: _getTypeFromCategory())),
                       );
                     } else if (state is FavouritesLoaded) {
                       final favourites = state.favourites;
