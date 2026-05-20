@@ -1,1 +1,1 @@
-enum PetType { cat, dog }
+enum PetType { cat, dog, bird, fish, reptile }

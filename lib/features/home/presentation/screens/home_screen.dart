@@ -54,6 +54,12 @@ class _HomeScreenState extends State<HomeScreen> {
         ? PetType.cat
         : category == 'Dogs'
         ? PetType.dog
+        : category == 'Birds'
+        ? PetType.bird
+        : category == 'Fish'
+        ? PetType.fish
+        : category == 'Reptiles'
+        ? PetType.reptile
         : null;
   }
 
@@ -216,7 +222,28 @@ class _HomeScreenState extends State<HomeScreen> {
                       final isLoadingMore = petState is PetListLoadingMore;
 
                       if (pets.isEmpty) {
-                        return const Center(child: Text('No pets found.'));
+                        return Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.search_off_rounded, size: 64, color: Colors.grey[400]),
+                              const SizedBox(height: 16),
+                              Text(
+                                'No $selectedCategory found',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.grey[600],
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                'Coming soon!',
+                                style: TextStyle(fontSize: 14, color: Colors.grey[400]),
+                              ),
+                            ],
+                          ),
+                        );
                       }
 
                       return BlocSelector<FavouritesBloc, FavouritesState, Set<String>>(
@@ -326,10 +353,7 @@ class _HomeScreenState extends State<HomeScreen> {
       _scrollController.jumpTo(0);
     }
 
-    PetType? type;
-    if (category == 'Cats') type = PetType.cat;
-    if (category == 'Dogs') type = PetType.dog;
-
+    final type = _getTypeFromCategory(category);
     _petListBloc.add(LoadPets(type: type));
   }
 

@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:petfinder/core/utils/pet_type.dart';
 import 'package:petfinder/features/home/domain/entities/pet.dart';
 import 'package:petfinder/features/home/domain/use_cases/get_all_pets_use_case.dart';
 import 'package:petfinder/features/home/domain/use_cases/search_pets_use_case.dart';
@@ -21,6 +22,17 @@ class PetListBloc extends Bloc<PetListEvent, PetListState> {
   }
 
   Future<void> _onLoadPets(LoadPets event, Emitter<PetListState> emit) async {
+    const supportedTypes = {null, PetType.cat, PetType.dog};
+    if (!supportedTypes.contains(event.type)) {
+      emit(PetListLoaded(
+        allPets: [],
+        filteredPets: [],
+        petType: event.type,
+        hasMoreData: false,
+      ));
+      return;
+    }
+
     emit(PetListLoading());
     try {
       // Reset pagination state when loading fresh
