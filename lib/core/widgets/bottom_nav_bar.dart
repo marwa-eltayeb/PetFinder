@@ -45,14 +45,14 @@ class BottomNavBar extends StatelessWidget {
               icon: Icons.chat_bubble_outline,
               isSelected: currentIndex == 2,
               onTap: () {
-                SnackBarHelper.showInfo(context, 'ChatScreen coming soon!');
+                Navigator.pushReplacementNamed(context, Routes.placeholderScreen, arguments: {'title': 'Chat', 'currentIndex': 2});
               },
             ),
             NavBarItem(
               icon: Icons.person_outline,
               isSelected: currentIndex == 3,
               onTap: () {
-                SnackBarHelper.showInfo(context, 'ProfileScreen coming soon!');
+                Navigator.pushReplacementNamed(context, Routes.placeholderScreen, arguments: {'title': 'Profile', 'currentIndex': 3});
               },
             ),
           ],

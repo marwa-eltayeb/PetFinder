@@ -1,20 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:petfinder/core/routing/routes.dart';
 import 'package:petfinder/core/utils/pet_type.dart';
+import 'package:petfinder/core/widgets/placeholder_screen.dart';
 import 'package:petfinder/features/details/presentation/screens/details_screen.dart';
 import 'package:petfinder/features/favourites/presentation/screens/favorites_screen.dart';
 import 'package:petfinder/features/home/presentation/screens/home_screen.dart';
 import 'package:petfinder/features/onboarding/onboarding_screen.dart';
 
 class AppRouter {
-
   final String environment;
+
   AppRouter({required this.environment});
 
   Route generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case Routes.onboardingScreen:
-        return MaterialPageRoute(builder: (_) => OnboardingScreen(environment: environment));
+        return MaterialPageRoute(
+          builder: (_) => OnboardingScreen(environment: environment),
+        );
 
       case Routes.homeScreen:
         return MaterialPageRoute(builder: (_) => HomeScreen());
@@ -29,6 +32,15 @@ class AppRouter {
 
       case Routes.favoritesScreen:
         return MaterialPageRoute(builder: (_) => FavoritesScreen());
+
+      case Routes.placeholderScreen:
+        final placeholderArgs = settings.arguments as Map<String, dynamic>;
+        return MaterialPageRoute(
+          builder: (_) => PlaceholderScreen(
+            title: placeholderArgs['title'],
+            currentIndex: placeholderArgs['currentIndex'],
+          ),
+        );
 
       default:
         return MaterialPageRoute(
