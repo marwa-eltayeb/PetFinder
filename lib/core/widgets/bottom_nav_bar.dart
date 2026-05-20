@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:petfinder/core/routing/routes.dart';
 import 'package:petfinder/core/theming/theme_data.dart';
-import 'package:petfinder/core/utils/snackbar_helper.dart';
 
 class BottomNavBar extends StatelessWidget {
   final int currentIndex;

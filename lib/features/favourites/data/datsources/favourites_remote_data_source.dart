@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:petfinder/core/network/dio_client.dart';
 import 'package:petfinder/core/network/network_config.dart';
 import 'package:petfinder/core/utils/pet_type.dart';
