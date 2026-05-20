@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:petfinder/core/theming/theme_data.dart';
+import 'package:petfinder/core/widgets/pet_image.dart';
 
 class PetCard extends StatelessWidget {
   final String name;
@@ -43,6 +44,8 @@ class PetCard extends StatelessWidget {
         ),
         child: Row(
           children: [
+
+            // Image Section
             Container(
               height: 100,
               width: 100,
@@ -52,36 +55,13 @@ class PetCard extends StatelessWidget {
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(12),
-                child: image.startsWith('http') ? Image.network(
-                  image,
-                  fit: BoxFit.cover,
-                  loadingBuilder: (context, child, loadingProgress) {
-                    if (loadingProgress == null) return child;
-                    return Center(
-                      child: CircularProgressIndicator(
-                        value: loadingProgress.expectedTotalBytes != null
-                            ? loadingProgress.cumulativeBytesLoaded /
-                            loadingProgress.expectedTotalBytes!
-                            : null,
-                      ),
-                    );
-                  },
-                  errorBuilder: (context, error, stackTrace) {
-                    return Icon(Icons.pets, size: 40, color: AppTheme.primary(context));
-                  },
-                )
-                    : Image.asset(
-                  image,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Icon(Icons.pets, size: 40, color: AppTheme.primary(context));
-                  },
-                ),
+                child: PetImage(imageUrl: image, iconSize: 40),
               ),
             ),
 
             const SizedBox(width: 16),
 
+            // Details Section
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

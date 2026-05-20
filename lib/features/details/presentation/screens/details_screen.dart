@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:petfinder/core/di/injection_container.dart';
@@ -81,6 +82,8 @@ class _DetailsScreenState extends State<DetailsScreen> {
                         Stack(
                           clipBehavior: Clip.hardEdge,
                           children: [
+
+                            // Image Section
                             Container(
                               height: 380,
                               width: double.infinity,
@@ -92,28 +95,16 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                 ),
                               ),
                               clipBehavior: Clip.antiAlias,
-                              child: Center(
-                                child: pet.imageUrl != null
-                                    ? Image.network(
-                                  pet.imageUrl!,
-                                  fit: BoxFit.cover,
-                                  width: double.infinity,
-                                  height: 380,
-                                  errorBuilder:
-                                      (context, error, stackTrace) =>
-                                   Icon(
-                                    Icons.pets,
-                                    size: 100,
-                                    color: AppTheme.primary(context),
-                                  ),
-                                )
-                                    :  Icon(
-                                  Icons.pets,
-                                  size: 100,
-                                  color: AppTheme.primary(context),
+                              child: CachedNetworkImage(
+                                imageUrl: pet.imageUrl ?? '',
+                                fit: BoxFit.cover,
+                                placeholder: (context, url) => const Center(child: CircularProgressIndicator(),),
+                                errorWidget: (context, url, error) => Center(child: Icon(Icons.pets, size: 100, color: AppTheme.primary(context)),
                                 ),
                               ),
                             ),
+
+                            // Back button and favourite button
                             Positioned(
                               top: 20,
                               left: 16,
@@ -126,6 +117,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                 ),
                               ),
                             ),
+
                             Positioned(
                               top: 20,
                               right: 16,

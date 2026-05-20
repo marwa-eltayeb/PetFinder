@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:petfinder/core/theming/theme_data.dart';
+import 'package:petfinder/core/widgets/pet_image.dart';
 
 class FavoritePetCard extends StatelessWidget {
   final String name;
@@ -40,51 +41,23 @@ class FavoritePetCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+
+            // Image Section
             Expanded(
               child: ClipRRect(
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(16),
                   topRight: Radius.circular(16),
                 ),
-                child: Container(
-                  decoration: const BoxDecoration(
-                    color: Color(0xFFE8F8F6),
-                  ),
-                  child: isNetworkImage
-                      ? Image.network(
-                    image,
-                    fit: BoxFit.cover,
-                    width: double.infinity,
-                    height: double.infinity,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Center(
-                        child: Icon(
-                          Icons.pets,
-                          size: 50,
-                          color: AppTheme.primary(context),
-                        ),
-                      );
-                    },
-                  )
-                      : Image.asset(
-                    image,
-                    fit: BoxFit.cover,
-                    width: double.infinity,
-                    height: double.infinity,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Center(
-                        child: Icon(
-                          Icons.pets,
-                          size: 50,
-                          color: AppTheme.primary(context),
-                        ),
-                      );
-                    },
-                  ),
+                child: ColoredBox(
+                  color: const Color(0xFFE8F8F6),
+                  child: PetImage(imageUrl: image, iconSize: 50),
                 ),
               ),
             ),
 
+
+            // Details Section
             Padding(
               padding: const EdgeInsets.all(12),
               child: Column(
