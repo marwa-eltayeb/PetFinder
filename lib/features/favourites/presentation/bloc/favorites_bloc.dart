@@ -18,6 +18,12 @@ class FavouritesBloc extends Bloc<FavouritesEvent, FavouritesState> {
   }
 
   Future<void> _onGetFavourites(LoadFavouritesEvent event, Emitter<FavouritesState> emit,) async {
+    const supportedTypes = {null, PetType.cat, PetType.dog};
+    if (!supportedTypes.contains(event.type)) {
+      emit(FavouritesLoaded(favourites: []));
+      return;
+    }
+
     emit(FavouritesLoading());
     try {
       if (event.type == null) {

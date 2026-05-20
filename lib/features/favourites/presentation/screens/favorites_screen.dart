@@ -46,12 +46,12 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
 
   PetType? _getTypeFromCategory() {
     switch (selectedCategory) {
-      case 'Cats':
-        return PetType.cat;
-      case 'Dogs':
-        return PetType.dog;
-      default:
-        return null;
+      case 'Cats': return PetType.cat;
+      case 'Dogs': return PetType.dog;
+      case 'Birds': return PetType.bird;
+      case 'Fish': return PetType.fish;
+      case 'Reptiles': return PetType.reptile;
+      default: return null;
     }
   }
 
