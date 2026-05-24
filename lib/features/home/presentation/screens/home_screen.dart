@@ -44,12 +44,6 @@ class _HomeScreenState extends State<HomeScreen> {
     'Reptiles',
   ];
 
-  PetListBloc createPetListBloc() {
-    final bloc = sl<PetListBloc>();
-    bloc.add(LoadPets());
-    return bloc;
-  }
-
   PetType? _getTypeFromCategory(String category) {
     return category == 'Cats'
         ? PetType.cat
@@ -67,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _petListBloc = createPetListBloc();
+    _petListBloc = sl<PetListBloc>()..add(LoadPets());;
     _searchController = TextEditingController();
     _scrollController = ScrollController();
     _scrollController.addListener(_onScroll);
@@ -273,9 +267,11 @@ class _HomeScreenState extends State<HomeScreen> {
                               }
 
                               final Pet pet = pets[index];
-                              final isFavourite = favouriteIds.contains('${pet.id}_${pet.type.index}');
+                              final keyString = '${pet.id}_${pet.type.index}';
+                              final isFavourite = favouriteIds.contains(keyString);
 
                               return PetCard(
+                                key: ValueKey(keyString),
                                 name: pet.name,
                                 image: pet.imageUrl ?? 'assets/images/placeholder.png',
                                 gender: pet.type == PetType.cat ? 'Cat' : 'Dog',
