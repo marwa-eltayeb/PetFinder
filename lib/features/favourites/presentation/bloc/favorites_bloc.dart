@@ -40,12 +40,9 @@ class FavouritesBloc extends Bloc<FavouritesEvent, FavouritesState> {
     }
   }
 
-  Future<void> _onAddFavourite(
-      AddFavouriteEvent event,
-      Emitter<FavouritesState> emit,
-      ) async {
+  Future<void> _onAddFavourite(AddFavouriteEvent event, Emitter<FavouritesState> emit) async {
     try {
-      await addFavouriteUseCase(
+      final newFavourite = await addFavouriteUseCase(
         event.type,
         event.imageId,
         event.subId,
@@ -54,15 +51,11 @@ class FavouritesBloc extends Bloc<FavouritesEvent, FavouritesState> {
         event.origin,
       );
 
-      // Reload favorites without showing loading state
       if (state is FavouritesLoaded) {
-        // Fetch updated favorites
-        final cats = await getFavouritesUseCase(PetType.cat);
-        final dogs = await getFavouritesUseCase(PetType.dog);
-
-        emit(FavouritesLoaded(favourites: [...cats, ...dogs]));
+        final current = (state as FavouritesLoaded).favourites;
+        final updated = [...current, newFavourite];
+        emit(FavouritesLoaded(favourites: updated));
       } else {
-        // If not loaded yet, just reload normally
         add(LoadFavouritesEvent(type: null));
       }
     } catch (e) {
@@ -70,22 +63,15 @@ class FavouritesBloc extends Bloc<FavouritesEvent, FavouritesState> {
     }
   }
 
-  Future<void> _onRemoveFavourite(
-      RemoveFavouriteEvent event,
-      Emitter<FavouritesState> emit,
-      ) async {
+  Future<void> _onRemoveFavourite(RemoveFavouriteEvent event, Emitter<FavouritesState> emit) async {
     try {
       await removeFavouriteUseCase(event.type, event.favouriteId);
 
-      // Reload favorites without showing loading state
       if (state is FavouritesLoaded) {
-        // Fetch updated favorites
-        final cats = await getFavouritesUseCase(PetType.cat);
-        final dogs = await getFavouritesUseCase(PetType.dog);
-
-        emit(FavouritesLoaded(favourites: [...cats, ...dogs]));
+        final current = (state as FavouritesLoaded).favourites;
+        final updated = current.where((f) => f.id != event.favouriteId).toList();
+        emit(FavouritesLoaded(favourites: updated));
       } else {
-        // If not loaded yet, just reload normally
         add(LoadFavouritesEvent(type: null));
       }
     } catch (e) {
