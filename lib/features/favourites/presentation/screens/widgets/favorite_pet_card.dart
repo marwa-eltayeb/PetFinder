@@ -22,8 +22,6 @@ class FavoritePetCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isNetworkImage = image.startsWith('http');
-
     return GestureDetector(
       onTap: onTap,
       child: Container(
