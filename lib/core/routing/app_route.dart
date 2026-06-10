@@ -25,7 +25,7 @@ class AppRouter {
       case Routes.detailsScreen:
         final args = settings.arguments as Map<String, dynamic>;
         final type = args['type'] as PetType;
-        final petId = args['petId'] as String;
+        final petId = args['petId'];
         final imageId = args['imageId'] as String?;
         final imageUrl = args['imageUrl'] as String?;
         return MaterialPageRoute(

@@ -3,6 +3,7 @@ import 'package:petfinder/core/utils/pet_type.dart';
 class FavouriteEntity {
   final int id;
   final String imageId;
+  final String? petId;
   final String? subId;
   final PetType type;
   final String? imageUrl;
@@ -12,6 +13,7 @@ class FavouriteEntity {
   const FavouriteEntity({
     required this.id,
     required this.imageId,
+    this.petId,
     this.subId,
     required this.type,
     this.imageUrl,

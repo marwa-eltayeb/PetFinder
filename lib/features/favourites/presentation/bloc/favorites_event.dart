@@ -10,6 +10,7 @@ class LoadFavouritesEvent extends FavouritesEvent {
 
 class AddFavouriteEvent extends FavouritesEvent {
   final PetType type;
+  final String? petId;
   final String imageId;
   final String subId;
   final String name;
@@ -18,6 +19,7 @@ class AddFavouriteEvent extends FavouritesEvent {
 
   AddFavouriteEvent({
     required this.type,
+    this.petId,
     required this.imageId,
     required this.subId,
     required this.name,

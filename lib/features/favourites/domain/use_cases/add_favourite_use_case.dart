@@ -10,9 +10,10 @@ class AddFavouriteUseCase {
   Future<FavouriteEntity> call(
     PetType type,
     String imageId,
+    String? petId,
     String subId,
     String name,
     String imageUrl,
     String origin,
-  ) => repository.addFavourite(type, imageId, subId, name, imageUrl, origin);
+  ) => repository.addFavourite(type, imageId, petId, subId, name, imageUrl, origin);
 }

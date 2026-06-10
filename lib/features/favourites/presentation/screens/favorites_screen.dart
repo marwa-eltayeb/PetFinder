@@ -6,13 +6,11 @@ import 'package:petfinder/core/theming/theme_data.dart';
 import 'package:petfinder/core/utils/pet_type.dart';
 import 'package:petfinder/core/widgets/bottom_nav_bar.dart';
 import 'package:petfinder/core/widgets/category_chip.dart';
+import 'package:petfinder/core/widgets/error_state_view.dart' show ErrorStateView;
 import 'package:petfinder/features/favourites/presentation/bloc/favorites_bloc.dart';
 import 'package:petfinder/features/favourites/presentation/bloc/favorites_event.dart';
 import 'package:petfinder/features/favourites/presentation/bloc/favorites_state.dart';
-import 'package:petfinder/features/favourites/presentation/widgets/favorite_pet_card.dart';
-
-import '../../../../core/widgets/error_state_view.dart';
-
+import 'package:petfinder/features/favourites/presentation/screens/widgets/favorite_pet_card.dart';
 
 class FavoritesScreen extends StatefulWidget {
   const FavoritesScreen({super.key});
@@ -169,7 +167,9 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                                 Routes.detailsScreen,
                                 arguments: {
                                   'type': fav.type,
-                                  'petId': fav.imageId,
+                                  'petId': fav.petId,
+                                  'imageId': fav.imageId,
+                                  'imageUrl': fav.imageUrl,
                                 },
                               );
                             },

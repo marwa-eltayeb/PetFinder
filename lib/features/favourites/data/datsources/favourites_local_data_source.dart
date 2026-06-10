@@ -8,7 +8,8 @@ abstract class FavouritesLocalDataSource {
       PetType type,
       String name,
       String imageUrl,
-      String origin);
+      String origin,
+      String? petId);
   Map<String, dynamic>? getFavouriteMetadata(String imageId, PetType type);
   Future<void> removeFavouriteMetadata(String imageId, PetType type);
 }
@@ -21,17 +22,12 @@ class FavouritesLocalDataSourceImpl implements FavouritesLocalDataSource {
   String _getKey(String imageId, PetType type) => 'fav_${type.name}_$imageId';
 
   @override
-  Future<void> saveFavouriteMetadata(
-      String imageId,
-      PetType type,
-      String name,
-      String imageUrl,
-      String origin,
-      ) async {
+  Future<void> saveFavouriteMetadata(String imageId, PetType type, String name, String imageUrl, String origin, String? petId) async {
     final data = {
       'name': name,
       'imageUrl': imageUrl,
       'origin': origin,
+      'petId': petId,
     };
     await sharedPreferences.setString(_getKey(imageId, type), json.encode(data));
   }

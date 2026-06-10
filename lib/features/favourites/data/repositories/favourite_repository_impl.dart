@@ -24,6 +24,7 @@ class FavouritesRepositoryImpl implements FavouritesRepository {
           imageUrl: metadata?['imageUrl'],
           breedName: metadata?['name'],
           origin: metadata?['origin'],
+          petId: metadata?['petId'],
         );
       }).toList();
     } on DioException catch (e) {
@@ -32,19 +33,20 @@ class FavouritesRepositoryImpl implements FavouritesRepository {
   }
 
   @override
-  Future<FavouriteEntity> addFavourite(PetType type, String imageId, String subId, String name, String imageUrl, String origin,) async {
+  Future<FavouriteEntity> addFavourite(PetType type, String imageId,String? petId, String subId, String name, String imageUrl, String origin,) async {
     try{
       // Save to API and get the result model
       final resultModel = await remote.addFavourite(type, imageId, subId);
 
       // Save metadata locally
-      await local.saveFavouriteMetadata(imageId, type, name, imageUrl, origin);
+      await local.saveFavouriteMetadata(imageId, type, name, imageUrl, origin, petId);
 
       // Convert model to entity with the provided metadata
       return resultModel.toEntity(
         imageUrl: imageUrl,
         breedName: name,
         origin: origin,
+        petId: petId,
       );
     } on DioException catch (e) {
       throw ServerFailure.fromDioException(dioException: e);

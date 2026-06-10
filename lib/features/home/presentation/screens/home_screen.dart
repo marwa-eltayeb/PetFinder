@@ -311,7 +311,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                   } else {
                                     favBloc.add(AddFavouriteEvent(
                                       type: pet.type,
-                                      imageId: pet.imageId ?? pet.id,
+                                      imageId: pet.imageId ?? '',
+                                      petId: pet.id,
                                       subId: 'user123',
                                       name: pet.name,
                                       imageUrl: pet.imageUrl ?? '',

@@ -45,6 +45,7 @@ class FavouritesBloc extends Bloc<FavouritesEvent, FavouritesState> {
       final newFavourite = await addFavouriteUseCase(
         event.type,
         event.imageId,
+        event.petId,
         event.subId,
         event.name,
         event.imageUrl,

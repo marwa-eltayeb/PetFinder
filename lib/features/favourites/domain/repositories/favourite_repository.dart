@@ -7,6 +7,7 @@ abstract class FavouritesRepository {
   Future<FavouriteEntity> addFavourite(
     PetType type,
     String imageId,
+    String? petId,
     String subId,
     String name,
     String imageUrl,
