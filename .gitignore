@@ -58,3 +58,8 @@ app.*.map.json
 
 # DevTools
 devtools_options.yaml
+
+# AI Rules
+AI_RULES.md
+CLAUDE.md
+
