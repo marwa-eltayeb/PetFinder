@@ -267,7 +267,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               }
 
                               final Pet pet = pets[index];
-                              final keyString = '${pet.id}_${pet.type.index}';
+                              final keyString = '${pet.imageId}_${pet.type.index}';
                               final isFavourite = favouriteIds.contains(keyString);
 
                               return PetCard(
@@ -285,6 +285,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                       builder: (_) => DetailsScreen(
                                         type: pet.type,
                                         petId: pet.id,
+                                        imageId: pet.imageId,
+                                        imageUrl: pet.imageUrl,
                                       ),
                                     ),
                                   );
@@ -295,7 +297,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     final state = favBloc.state;
                                     if (state is FavouritesLoaded) {
                                       final favourite = state.favourites.firstWhere(
-                                        (f) => f.imageId == pet.id && f.type == pet.type,
+                                        (f) => f.imageId == pet.imageId && f.type == pet.type,
                                       );
                                       favBloc.add(RemoveFavouriteEvent(
                                         type: pet.type,
@@ -309,7 +311,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   } else {
                                     favBloc.add(AddFavouriteEvent(
                                       type: pet.type,
-                                      imageId: pet.id,
+                                      imageId: pet.imageId ?? pet.id,
                                       subId: 'user123',
                                       name: pet.name,
                                       imageUrl: pet.imageUrl ?? '',

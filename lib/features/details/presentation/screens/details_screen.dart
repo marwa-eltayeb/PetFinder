@@ -18,8 +18,10 @@ import 'package:petfinder/features/favourites/presentation/bloc/favorites_state.
 class DetailsScreen extends StatefulWidget {
   final PetType type;
   final dynamic petId;
+  final String? imageId;
+  final String? imageUrl;
 
-  const DetailsScreen({super.key, required this.type, required this.petId});
+  const DetailsScreen({super.key, required this.type, required this.petId, this.imageId, this.imageUrl});
 
   @override
   State<DetailsScreen> createState() => _DetailsScreenState();
@@ -34,7 +36,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
     super.initState();
     _bloc = sl<PetDetailsBloc>();
     _favouritesBloc = sl<FavouritesBloc>();
-    _bloc.add(LoadPetDetails(widget.type, widget.petId));
+    _bloc.add(LoadPetDetails(widget.type, widget.petId, imageId: widget.imageId, imageUrl: widget.imageUrl));
     _favouritesBloc.add(LoadFavouritesEvent(type: widget.type));
   }
 
@@ -48,7 +50,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
   bool _isFavourite(String imageId, PetType type, FavouritesState state) {
     if (state is FavouritesLoaded) {
       return state.favourites.any(
-            (f) => f.imageId == imageId && f.type == type,
+        (f) => f.imageId == imageId && f.type == type,
       );
     }
     return false;
@@ -70,11 +72,12 @@ class _DetailsScreenState extends State<DetailsScreen> {
                 return const Center(child: CircularProgressIndicator());
               } else if (petState is PetDetailsLoaded) {
                 final pet = petState.details;
+                final imageUrl = petState.imageUrl;
+                final imageId = petState.imageId;
 
                 return BlocBuilder<FavouritesBloc, FavouritesState>(
                   builder: (context, favState) {
-                    final isFavourite =
-                    _isFavourite(pet.id.toString(), widget.type, favState);
+                    final isFavourite = _isFavourite(imageId ?? '', widget.type, favState);
 
                     return Column(
                       children: [
@@ -82,7 +85,6 @@ class _DetailsScreenState extends State<DetailsScreen> {
                         Stack(
                           clipBehavior: Clip.hardEdge,
                           children: [
-
                             // Image Section
                             Container(
                               height: 380,
@@ -96,10 +98,17 @@ class _DetailsScreenState extends State<DetailsScreen> {
                               ),
                               clipBehavior: Clip.antiAlias,
                               child: CachedNetworkImage(
-                                imageUrl: pet.imageUrl ?? '',
+                                imageUrl: imageUrl ?? '',
                                 fit: BoxFit.cover,
-                                placeholder: (context, url) => const Center(child: CircularProgressIndicator(),),
-                                errorWidget: (context, url, error) => Center(child: Icon(Icons.pets, size: 100, color: AppTheme.primary(context)),
+                                placeholder: (context, url) => const Center(
+                                  child: CircularProgressIndicator(),
+                                ),
+                                errorWidget: (context, url, error) => Center(
+                                  child: Icon(
+                                    Icons.pets,
+                                    size: 100,
+                                    color: AppTheme.primary(context),
+                                  ),
                                 ),
                               ),
                             ),
@@ -128,31 +137,39 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                     FavouriteEntity? fav;
                                     if (favState is FavouritesLoaded) {
                                       try {
-                                        fav = favState.favourites.firstWhere((f) => f.imageId == pet.id.toString() && f.type == widget.type,);
+                                        fav = favState.favourites.firstWhere((f) => f.imageId == imageId && f.type == widget.type,);
                                       } catch (_) {
                                         fav = null;
                                       }
                                     }
                                     if (fav != null) {
-                                      _favouritesBloc.add(RemoveFavouriteEvent(
-                                        type: widget.type,
-                                        favouriteId: fav.id,
-                                      ));
-                                      SnackBarHelper.showInfo(context,
-                                          '${pet.name} removed from favourites');
+                                      _favouritesBloc.add(
+                                        RemoveFavouriteEvent(
+                                          type: widget.type,
+                                          favouriteId: fav.id,
+                                        ),
+                                      );
+                                      SnackBarHelper.showInfo(
+                                        context,
+                                        '${pet.name} removed from favourites',
+                                      );
                                     }
                                   } else {
                                     // Add to favourites
-                                    _favouritesBloc.add(AddFavouriteEvent(
-                                      type: pet.type,
-                                      imageId: pet.id,
-                                      subId: 'user123',
-                                      name: pet.name,
-                                      imageUrl: pet.imageUrl ?? '',
-                                      origin: pet.origin ?? 'Unknown',
-                                    ));
-                                    SnackBarHelper.showInfo(context,
-                                        '${pet.name} added to favourites');
+                                    _favouritesBloc.add(
+                                      AddFavouriteEvent(
+                                        type: pet.type,
+                                        imageId: imageId ?? '',
+                                        subId: 'user123',
+                                        name: pet.name,
+                                        imageUrl: imageUrl ?? '',
+                                        origin: pet.origin ?? 'Unknown',
+                                      ),
+                                    );
+                                    SnackBarHelper.showInfo(
+                                      context,
+                                      '${pet.name} added to favourites',
+                                    );
                                   }
                                 },
                                 child: Icon(
@@ -179,9 +196,9 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                 children: [
                                   Row(
                                     mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                        MainAxisAlignment.spaceBetween,
                                     crossAxisAlignment:
-                                    CrossAxisAlignment.start,
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Expanded(
                                         child: Text(
@@ -189,7 +206,9 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                           style: TextStyle(
                                             fontSize: 23,
                                             fontWeight: FontWeight.bold,
-                                            color: AppTheme.textPrimary(context),
+                                            color: AppTheme.textPrimary(
+                                              context,
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -216,7 +235,9 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                         pet.origin ?? 'Unknown location',
                                         style: TextStyle(
                                           fontSize: 14,
-                                          color: AppTheme.textSecondary(context),
+                                          color: AppTheme.textSecondary(
+                                            context,
+                                          ),
                                         ),
                                       ),
                                     ],
@@ -257,7 +278,8 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                   ),
                                   const SizedBox(height: 12),
                                   Text(
-                                    pet.description ?? 'No description available',
+                                    pet.description ??
+                                        'No description available',
                                     style: TextStyle(
                                       fontSize: 14,
                                       color: AppTheme.textSecondary(context),
@@ -270,14 +292,19 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                     height: 56,
                                     child: ElevatedButton(
                                       onPressed: () {
-                                        SnackBarHelper.showInfo(context,
-                                            "Adopting ${pet.name}...");
+                                        SnackBarHelper.showInfo(
+                                          context,
+                                          "Adopting ${pet.name}...",
+                                        );
                                       },
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: AppTheme.primary(context),
+                                        backgroundColor: AppTheme.primary(
+                                          context,
+                                        ),
                                         shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                          BorderRadius.circular(16),
+                                          borderRadius: BorderRadius.circular(
+                                            16,
+                                          ),
                                         ),
                                         elevation: 0,
                                       ),
@@ -303,7 +330,9 @@ class _DetailsScreenState extends State<DetailsScreen> {
               } else if (petState is PetDetailsError) {
                 return ErrorStateView(
                   message: petState.message,
-                  onRetry: () => context.read<PetDetailsBloc>().add(LoadPetDetails(widget.type, widget.petId)),
+                  onRetry: () => context.read<PetDetailsBloc>().add(
+                    LoadPetDetails(widget.type, widget.petId),
+                  ),
                 );
               }
               return const SizedBox.shrink();

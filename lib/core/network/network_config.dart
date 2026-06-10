@@ -9,4 +9,9 @@ class NetworkConfig {
   static String getApiKey(PetType type) {
     return type == PetType.cat ? ApiConstants.catApiKey : ApiConstants.dogApiKey;
   }
+
+  static String? buildImageUrl(String? imageId) {
+    if (imageId == null) return null;
+    return 'https://cdn2.thecatapi.com/images/$imageId.jpg';
+  }
 }

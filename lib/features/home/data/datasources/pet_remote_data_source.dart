@@ -16,14 +16,30 @@ class PetRemoteDataSourceImpl implements PetRemoteDataSource {
 
   @override
   Future<List<PetModel>> getPets({required PetType type, int limit = 10, int page = 0,}) async {
-    final response = await client.get(
-      NetworkConfig.getBaseUrl(type),
-      ApiConstants.breeds,
-      queryParams: {'limit': limit, 'page': page},
-      headers: {'x-api-key': NetworkConfig.getApiKey(type)},
-    );
-    final List data = response.data;
-    return data.map((json) => PetModel.fromJson(json, type)).toList();
+    if (type == PetType.dog) {
+      final response = await client.get(
+        NetworkConfig.getBaseUrl(type),
+        '/v1/images/search',
+        queryParams: {
+          'has_breeds': true,
+          'include_breeds': true,
+          'limit': limit,
+          'page': page,
+        },
+        headers: {'x-api-key': NetworkConfig.getApiKey(type)},
+      );
+      final List data = response.data;
+      return data.map((json) => PetModel.fromImageJson(json as Map<String, dynamic>, type)).toList();
+    } else {
+      final response = await client.get(
+        NetworkConfig.getBaseUrl(type),
+        ApiConstants.breeds,
+        queryParams: {'limit': limit, 'page': page},
+        headers: {'x-api-key': NetworkConfig.getApiKey(type)},
+      );
+      final List data = response.data;
+      return data.map((json) => PetModel.fromJson(json as Map<String, dynamic>, type)).toList();
+    }
   }
 
   @override

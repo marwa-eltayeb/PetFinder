@@ -1,4 +1,5 @@
 import 'package:hive/hive.dart';
+import 'package:petfinder/core/network/network_config.dart';
 import 'package:petfinder/core/utils/pet_type.dart';
 import 'package:petfinder/features/details/domain/entities/pet_details.dart';
 
@@ -34,6 +35,9 @@ class PetDetailsModel {
   @HiveField(8)
   final String lifeSpan;
 
+  @HiveField(9)
+  final String? imageId;
+
   PetDetailsModel({
     required this.id,
     required this.name,
@@ -44,17 +48,13 @@ class PetDetailsModel {
     this.imageUrl,
     required this.weight,
     required this.lifeSpan,
+    this.imageId,
   });
 
   PetType get type => PetType.values[typeIndex];
 
   factory PetDetailsModel.fromJson(PetType type, Map<String, dynamic> json) {
     final imageId = json['reference_image_id'];
-    final imageUrl = imageId != null
-        ? (type == PetType.cat
-        ? 'https://cdn2.thecatapi.com/images/$imageId.jpg'
-        : 'https://cdn2.thedogapi.com/images/$imageId.jpg')
-        : null;
 
     String lifeSpan = (json['life_span'] ?? 'Unknown').toString();
     lifeSpan = lifeSpan.replaceAll(RegExp(r'\s*years'), '').trim();
@@ -71,9 +71,10 @@ class PetDetailsModel {
       origin: json['origin'],
       temperament: json['temperament'],
       description: description,
-      imageUrl: imageUrl,
+      imageUrl: NetworkConfig.buildImageUrl(imageId),
       weight: json['weight']?['metric'] ?? 'Unknown',
       lifeSpan: lifeSpan,
+      imageId: json['reference_image_id'],
     );
   }
 

@@ -1,4 +1,5 @@
 import 'package:hive/hive.dart';
+import 'package:petfinder/core/network/network_config.dart';
 
 import '../../domain/entities/pet.dart';
 import '../../../../core/utils/pet_type.dart';
@@ -26,6 +27,9 @@ class PetModel {
   @HiveField(5)
   final String? temperament;
 
+  @HiveField(6)
+  final String? imageId;
+
   PetModel({
     required this.id,
     required this.name,
@@ -33,24 +37,44 @@ class PetModel {
     this.imageUrl,
     this.origin,
     this.temperament,
+    this.imageId,
   });
 
   PetType get type => PetType.values[typeIndex];
 
+  // Used for cats
   factory PetModel.fromJson(Map<String, dynamic> json, PetType type) {
-    final imageId = json['reference_image_id'];
-    final baseUrl = type == PetType.cat
-        ? 'https://cdn2.thecatapi.com/images'
-        : 'https://cdn2.thedogapi.com/images';
-    final imageUrl = imageId != null ? '$baseUrl/$imageId.jpg' : null;
+    final imageId = json['reference_image_id'] as String?;
 
     return PetModel(
       id: json['id'].toString(),
       name: json['name'],
       typeIndex: type.index,
-      imageUrl: imageUrl,
+      imageUrl: NetworkConfig.buildImageUrl(imageId),
       origin: json['origin'],
       temperament: json['temperament'],
+      imageId: imageId ?? json['id'].toString(),
+    );
+  }
+
+  // Used for dogs
+  factory PetModel.fromImageJson(Map<String, dynamic> json, PetType type) {
+    final imageId = json['id'] as String;
+    final imageUrl = json['url'] as String?;
+
+    final breeds = json['breeds'] as List?;
+    final breed = (breeds != null && breeds.isNotEmpty)
+        ? breeds[0] as Map<String, dynamic>
+        : <String, dynamic>{};
+
+    return PetModel(
+      id: breed['id']?.toString() ?? imageId,
+      name: breed['name'] as String? ?? 'Unknown',
+      typeIndex: type.index,
+      imageUrl: imageUrl,
+      origin: breed['origin'] as String?,
+      temperament: breed['temperament'] as String?,
+      imageId: imageId,
     );
   }
 
@@ -62,6 +86,7 @@ class PetModel {
       imageUrl: pet.imageUrl,
       origin: pet.origin,
       temperament: pet.temperament,
+      imageId: pet.imageId,
     );
   }
 
@@ -73,6 +98,7 @@ class PetModel {
       imageUrl: imageUrl,
       origin: origin,
       temperament: temperament,
+      imageId: imageId,
     );
   }
 

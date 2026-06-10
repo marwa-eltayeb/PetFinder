@@ -11,7 +11,9 @@ class PetDetailsBloc extends Bloc<PetDetailsEvent, PetDetailsState> {
       emit(PetDetailsLoading());
       try {
         final details = await getPetDetails(event.type, event.id);
-        emit(PetDetailsLoaded(details));
+        final imageUrl = details.imageUrl ?? event.imageUrl;
+
+        emit(PetDetailsLoaded(details, imageId: event.imageId, imageUrl: imageUrl));
       } catch (e) {
         emit(PetDetailsError(e.toString()));
       }

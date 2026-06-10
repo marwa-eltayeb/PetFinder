@@ -26,8 +26,10 @@ class AppRouter {
         final args = settings.arguments as Map<String, dynamic>;
         final type = args['type'] as PetType;
         final petId = args['petId'] as String;
+        final imageId = args['imageId'] as String?;
+        final imageUrl = args['imageUrl'] as String?;
         return MaterialPageRoute(
-          builder: (_) => DetailsScreen(type: type, petId: petId),
+          builder: (_) => DetailsScreen(type: type, petId: petId, imageId: imageId, imageUrl: imageUrl),
         );
 
       case Routes.favoritesScreen:
