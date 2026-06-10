@@ -1,3 +1,4 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
@@ -16,7 +17,8 @@ void main() {
   late PetDetailsRemoteDataSourceImpl dataSource;
   late MockDioClient mockDioClient;
 
-  setUp(() {
+  setUp(() async {
+    await dotenv.load(fileName: '.env');
     mockDioClient = MockDioClient();
     dataSource = PetDetailsRemoteDataSourceImpl(mockDioClient);
   });
