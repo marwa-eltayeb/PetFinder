@@ -34,6 +34,9 @@ jobs:
           echo "CAT_API_KEY=${{ secrets.CAT_API_KEY }}" >> .env
           echo "DOG_API_KEY=${{ secrets.DOG_API_KEY }}" >> .env    
 
+      - name: Generate code
+        run: dart run build_runner build --delete-conflicting-outputs
+
       - name: Run tests
         run: flutter test
 
