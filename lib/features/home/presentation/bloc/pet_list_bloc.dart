@@ -175,7 +175,7 @@ class PetListBloc extends Bloc<PetListEvent, PetListState> {
       allPets: currentState.allPets,
       filteredPets: filtered,
       petType: currentState.petType,
-      hasMoreData: currentState.hasMoreData,
+      hasMoreData: false,
     ));
   }
 
