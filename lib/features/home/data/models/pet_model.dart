@@ -43,7 +43,7 @@ class PetModel {
   PetType get type => PetType.values[typeIndex];
 
   // Used for cats
-  factory PetModel.fromJson(Map<String, dynamic> json, PetType type) {
+  factory PetModel.fromCatJson(Map<String, dynamic> json, PetType type) {
     final imageId = json['reference_image_id'] as String?;
 
     return PetModel(
@@ -58,7 +58,7 @@ class PetModel {
   }
 
   // Used for dogs
-  factory PetModel.fromImageJson(Map<String, dynamic> json, PetType type) {
+  factory PetModel.fromDogJson(Map<String, dynamic> json, PetType type) {
     final imageId = json['id'] as String;
     final imageUrl = json['url'] as String?;
 

@@ -29,7 +29,7 @@ class PetRemoteDataSourceImpl implements PetRemoteDataSource {
         headers: {'x-api-key': NetworkConfig.getApiKey(type)},
       );
       final List data = response.data;
-      return data.map((json) => PetModel.fromImageJson(json as Map<String, dynamic>, type)).toList();
+      return data.map((json) => PetModel.fromDogJson(json as Map<String, dynamic>, type)).toList();
     } else {
       final response = await client.get(
         NetworkConfig.getBaseUrl(type),
@@ -38,7 +38,7 @@ class PetRemoteDataSourceImpl implements PetRemoteDataSource {
         headers: {'x-api-key': NetworkConfig.getApiKey(type)},
       );
       final List data = response.data;
-      return data.map((json) => PetModel.fromJson(json as Map<String, dynamic>, type)).toList();
+      return data.map((json) => PetModel.fromCatJson(json as Map<String, dynamic>, type)).toList();
     }
   }
 
@@ -51,6 +51,6 @@ class PetRemoteDataSourceImpl implements PetRemoteDataSource {
       headers: {'x-api-key': NetworkConfig.getApiKey(type)},
     );
     final List data = response.data;
-    return data.map((json) => PetModel.fromJson(json, type)).toList();
+    return data.map((json) => PetModel.fromCatJson(json, type)).toList();
   }
 }
