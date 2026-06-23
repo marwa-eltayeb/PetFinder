@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:petfinder/core/routing/routes.dart';
 import 'package:petfinder/core/theming/theme_data.dart';
-import 'package:petfinder/core/utils/config.dart';
 import 'package:petfinder/features/onboarding/widgets/get_started_button.dart';
 import 'package:petfinder/features/onboarding/widgets/pet_image_section.dart';
 
 class OnboardingScreen extends StatelessWidget {
-  const OnboardingScreen({super.key});
+  final String environment;
+
+  const OnboardingScreen({
+    super.key,
+    required this.environment,
+  });
 
   void _onGetStarted(BuildContext context) {
     Navigator.of(context).pushReplacementNamed(Routes.homeScreen);
@@ -14,7 +18,8 @@ class OnboardingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final titleSuffix = Config.isDev ? '\nDEV' : '';
+    final isDev = environment == 'development';
+    final titleSuffix = isDev ? '\nDEV' : '';
 
     return Scaffold(
       backgroundColor: AppTheme.background(context),
