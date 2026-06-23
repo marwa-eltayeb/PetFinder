@@ -11,6 +11,8 @@ class GetStartedButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final primaryColor = AppTheme.primary(context);
+
     return Container(
       width: double.infinity,
       height: 56,
@@ -19,7 +21,7 @@ class GetStartedButton extends StatelessWidget {
         borderRadius: BorderRadius.circular(28),
         boxShadow: [
           BoxShadow(
-            color: AppTheme.primary(context).withValues(alpha: 0.3),
+            color: primaryColor.withValues(alpha: 0.3),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -28,7 +30,6 @@ class GetStartedButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppTheme.primary(context),
           foregroundColor: Colors.white,
           elevation: 0,
           shape: RoundedRectangleBorder(
@@ -36,21 +37,19 @@ class GetStartedButton extends StatelessWidget {
           ),
           padding: EdgeInsets.zero,
         ),
-        child: Row(
+        child: const Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
+            Icon(
               Icons.pets,
               size: 24,
-              color: Colors.white,
             ),
-            const SizedBox(width: 8),
-            const Text(
+            SizedBox(width: 8),
+            Text(
               'Get started',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
-                color: Colors.white,
                 letterSpacing: 0.2,
               ),
             ),

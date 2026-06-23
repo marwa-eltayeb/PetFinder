@@ -6,12 +6,15 @@ import 'package:petfinder/features/onboarding/widgets/get_started_button.dart';
 import 'package:petfinder/features/onboarding/widgets/pet_image_section.dart';
 
 class OnboardingScreen extends StatelessWidget {
+  const OnboardingScreen({super.key});
 
-  final String environment;
-  const OnboardingScreen({super.key, required this.environment});
+  void _onGetStarted(BuildContext context) {
+    Navigator.of(context).pushReplacementNamed(Routes.homeScreen);
+  }
 
   @override
   Widget build(BuildContext context) {
+    final titleSuffix = Config.isDev ? '\nDEV' : '';
 
     return Scaffold(
       backgroundColor: AppTheme.background(context),
@@ -33,7 +36,7 @@ class OnboardingScreen extends StatelessWidget {
                   children: [
                     // Title
                     Text(
-                      'Find Your Best\nCompanion With Us\n${Config.isDev ? "DEV" : ""}',
+                      'Find Your Best\nCompanion With Us$titleSuffix',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 35,
@@ -63,9 +66,7 @@ class OnboardingScreen extends StatelessWidget {
 
                     // Get Started Button
                     GetStartedButton(
-                      onPressed: () {
-                        Navigator.of(context).pushReplacementNamed(Routes.homeScreen);
-                      },
+                      onPressed: () => _onGetStarted(context),
                     ),
 
                     const SizedBox(height: 40),
@@ -75,7 +76,7 @@ class OnboardingScreen extends StatelessWidget {
                       width: 134,
                       height: 5,
                       decoration: BoxDecoration(
-                        color: Colors.black,
+                        color: Theme.of(context).colorScheme.onSurface,
                         borderRadius: BorderRadius.circular(2.5),
                       ),
                     ),

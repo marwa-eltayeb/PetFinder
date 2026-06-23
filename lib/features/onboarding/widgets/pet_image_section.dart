@@ -10,12 +10,11 @@ class PetImageSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    final screenHeight = MediaQuery.sizeOf(context).height;
+
+    return SizedBox(
       width: double.infinity,
-      height: MediaQuery.of(context).size.height * 0.45,
-      decoration: BoxDecoration(
-        color: Colors.white,
-      ),
+      height: screenHeight * 0.45,
       child: Image.asset(
         imagePath,
         fit: BoxFit.contain,
