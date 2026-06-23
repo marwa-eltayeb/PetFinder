@@ -9,7 +9,6 @@ import 'package:petfinder/core/routing/app_route.dart';
 import 'package:petfinder/core/routing/routes.dart';
 import 'package:petfinder/core/presentation/cubit/theme_cubit.dart';
 import 'package:petfinder/core/theming/theme_data.dart';
-import 'package:petfinder/core/utils/config.dart';
 import 'package:petfinder/core/widgets/category_chip.dart';
 import 'package:petfinder/features/home/presentation/screens/widgets/search_bar.dart';
 import 'package:petfinder/features/onboarding/widgets/get_started_button.dart';
@@ -51,8 +50,6 @@ void main() {
       }
 
       await initAll();
-
-      Config.environment = 'development';
     });
 
     tearDown(() async {
@@ -304,7 +301,7 @@ class TestApp extends StatelessWidget {
             darkTheme: darkTheme,
             themeMode: themeMode,
             initialRoute: Routes.onboardingScreen,
-            onGenerateRoute: AppRouter(environment: 'dev').generateRoute,
+            onGenerateRoute: AppRouter().generateRoute,
           );
         },
       ),

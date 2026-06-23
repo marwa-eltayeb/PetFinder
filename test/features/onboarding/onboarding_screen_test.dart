@@ -1,20 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:petfinder/features/onboarding/onboarding_screen.dart';
-import 'package:petfinder/core/utils/config.dart';
 
 void main() {
 
   group('OnboardingScreen Widget Tests', () {
-
-    setUp(() {
-      Config.environment = 'development';
-    });
-
     testWidgets('should display all text content', (WidgetTester tester) async {
       await tester.pumpWidget(
         const MaterialApp(
-          home: OnboardingScreen(environment: 'development'),
+          home: OnboardingScreen(),
         ),
       );
 
@@ -29,7 +23,7 @@ void main() {
     testWidgets('should contain SafeArea widget', (WidgetTester tester) async {
       await tester.pumpWidget(
         const MaterialApp(
-          home: OnboardingScreen(environment: 'development'),
+          home: OnboardingScreen(),
         ),
       );
 
@@ -42,7 +36,7 @@ void main() {
     testWidgets('should display pet images', (WidgetTester tester) async {
       await tester.pumpWidget(
         const MaterialApp(
-          home: OnboardingScreen(environment: 'development'),
+          home: OnboardingScreen(),
         ),
       );
 
@@ -58,7 +52,7 @@ void main() {
     testWidgets('should display action button', (WidgetTester tester) async {
       await tester.pumpWidget(
         const MaterialApp(
-          home: OnboardingScreen(environment: 'development'),
+          home: OnboardingScreen(),
         ),
       );
 
@@ -71,11 +65,9 @@ void main() {
     });
 
     testWidgets('should show DEV indicator in development mode', (WidgetTester tester) async {
-      Config.environment = 'development';
-
       await tester.pumpWidget(
         const MaterialApp(
-          home: OnboardingScreen(environment: 'development'),
+          home: OnboardingScreen(),
         ),
       );
 

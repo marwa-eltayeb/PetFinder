@@ -8,15 +8,11 @@ import 'package:petfinder/features/home/presentation/screens/home_screen.dart';
 import 'package:petfinder/features/onboarding/onboarding_screen.dart';
 
 class AppRouter {
-  final String environment;
-
-  AppRouter({required this.environment});
-
   Route generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case Routes.onboardingScreen:
         return MaterialPageRoute(
-          builder: (_) => OnboardingScreen(environment: environment),
+          builder: (_) => OnboardingScreen(),
         );
 
       case Routes.homeScreen:

@@ -31,9 +31,6 @@ void mainCommon(String environment) async {
   };
 
   await initAll();
-
-  Config.environment = environment;
-
   runApp(MyApp(environment: environment));
 }
 
@@ -61,7 +58,7 @@ class MyApp extends StatelessWidget {
             darkTheme: darkTheme,
             themeMode: themeMode,
             initialRoute: Routes.onboardingScreen,
-            onGenerateRoute: AppRouter(environment: environment).generateRoute,
+            onGenerateRoute: AppRouter().generateRoute,
             navigatorObservers: [FirebaseAnalyticsObserver(analytics: analytics),],
           );
         },
