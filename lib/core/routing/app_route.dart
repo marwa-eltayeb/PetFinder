@@ -11,15 +11,16 @@ class AppRouter {
   Route generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case Routes.onboardingScreen:
-        return MaterialPageRoute(
-          builder: (_) => OnboardingScreen(),
-        );
+        return MaterialPageRoute(builder: (_) => const OnboardingScreen(),);
 
       case Routes.homeScreen:
-        return MaterialPageRoute(builder: (_) => HomeScreen());
+        return MaterialPageRoute(builder: (_) => const HomeScreen());
 
       case Routes.detailsScreen:
-        final args = settings.arguments as Map<String, dynamic>;
+        final args = settings.arguments;
+        if (args is! Map<String, dynamic>) {
+          return _errorRoute(settings.name);
+        }
         final type = args['type'] as PetType;
         final petId = args['petId'];
         final imageId = args['imageId'] as String?;
@@ -29,10 +30,13 @@ class AppRouter {
         );
 
       case Routes.favoritesScreen:
-        return MaterialPageRoute(builder: (_) => FavoritesScreen());
+        return MaterialPageRoute(builder: (_) => const FavoritesScreen());
 
       case Routes.placeholderScreen:
-        final placeholderArgs = settings.arguments as Map<String, dynamic>;
+        final placeholderArgs = settings.arguments;
+        if (placeholderArgs is! Map<String, dynamic>) {
+          return _errorRoute(settings.name);
+        }
         return MaterialPageRoute(
           builder: (_) => PlaceholderScreen(
             title: placeholderArgs['title'],
@@ -41,11 +45,17 @@ class AppRouter {
         );
 
       default:
-        return MaterialPageRoute(
-          builder: (_) => Scaffold(
-            body: Center(child: Text("No route defined for ${settings.name}")),
-          ),
-        );
+        return _errorRoute(settings.name);
     }
+  }
+
+  Route _errorRoute(String? routeName) {
+    return MaterialPageRoute(
+      builder: (_) => Scaffold(
+        body: Center(
+          child: Text('No route defined for $routeName'),
+        ),
+      ),
+    );
   }
 }

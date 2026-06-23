@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:petfinder/core/theming/theme_data.dart';
+import 'package:petfinder/core/utils/app_colors.dart';
 
 class InfoCard extends StatelessWidget {
   final String title;
@@ -13,10 +13,12 @@ class InfoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
       decoration: BoxDecoration(
-        color: const Color(0xFFE8F8F6),
+        color: AppColors.lightSurfaceAlt,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
@@ -26,7 +28,7 @@ class InfoCard extends StatelessWidget {
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,
-              color: AppTheme.textPrimary(context),
+              color: colorScheme.onSurface,
             ),
           ),
           const SizedBox(height: 4),
@@ -34,7 +36,7 @@ class InfoCard extends StatelessWidget {
             value,
             style: TextStyle(
               fontSize: 14,
-              color: AppTheme.textSecondary(context),
+              color: colorScheme.onSurfaceVariant,
             ),
           ),
         ],

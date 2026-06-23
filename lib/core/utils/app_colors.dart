@@ -14,4 +14,6 @@ class AppColors {
   static const Color darkTextSecondary = Color(0xFF9E9E9E);
   static const Color darkBackground = Color(0xFF0D0D0D);
   static const Color darkSurface = Color(0xFF202020);
+
+  static const Color lightSurfaceAlt = Color(0xFFE8F8F6);
 }

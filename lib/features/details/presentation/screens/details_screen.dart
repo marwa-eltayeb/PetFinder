@@ -21,28 +21,41 @@ class DetailsScreen extends StatefulWidget {
   final String? imageId;
   final String? imageUrl;
 
-  const DetailsScreen({super.key, required this.type, required this.petId, this.imageId, this.imageUrl});
+  const DetailsScreen({
+    super.key,
+    required this.type,
+    required this.petId,
+    this.imageId,
+    this.imageUrl,
+  });
 
   @override
   State<DetailsScreen> createState() => _DetailsScreenState();
 }
 
 class _DetailsScreenState extends State<DetailsScreen> {
-  late final PetDetailsBloc _bloc;
+  late final PetDetailsBloc _petDetailsBloc;
   late final FavouritesBloc _favouritesBloc;
 
   @override
   void initState() {
     super.initState();
-    _bloc = sl<PetDetailsBloc>();
+    _petDetailsBloc = sl<PetDetailsBloc>();
     _favouritesBloc = sl<FavouritesBloc>();
-    _bloc.add(LoadPetDetails(widget.type, widget.petId, imageId: widget.imageId, imageUrl: widget.imageUrl));
+    _petDetailsBloc.add(
+      LoadPetDetails(
+        widget.type,
+        widget.petId,
+        imageId: widget.imageId,
+        imageUrl: widget.imageUrl,
+      ),
+    );
     _favouritesBloc.add(LoadFavouritesEvent(type: widget.type));
   }
 
   @override
   void dispose() {
-    _bloc.close();
+    _petDetailsBloc.close();
     _favouritesBloc.close();
     super.dispose();
   }
@@ -60,7 +73,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider.value(value: _bloc),
+        BlocProvider.value(value: _petDetailsBloc),
         BlocProvider.value(value: _favouritesBloc),
       ],
       child: Scaffold(
@@ -75,72 +88,70 @@ class _DetailsScreenState extends State<DetailsScreen> {
                 final imageUrl = petState.imageUrl;
                 final imageId = petState.imageId;
 
-                return BlocBuilder<FavouritesBloc, FavouritesState>(
-                  builder: (context, favState) {
-                    final isFavourite = _isFavourite(imageId ?? '', widget.type, favState);
-
-                    return Column(
+                return Column(
+                  children: [
+                    // Header with image and favourite button
+                    Stack(
+                      clipBehavior: Clip.hardEdge,
                       children: [
-                        // Header with image and favourite button
-                        Stack(
-                          clipBehavior: Clip.hardEdge,
-                          children: [
-                            // Image Section
-                            Container(
-                              height: 380,
-                              width: double.infinity,
-                              decoration: const BoxDecoration(
-                                color: Color(0xFFE8F8F6),
-                                borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(32),
-                                  bottomRight: Radius.circular(32),
-                                ),
-                              ),
-                              clipBehavior: Clip.antiAlias,
-                              child: CachedNetworkImage(
-                                imageUrl: imageUrl ?? '',
-                                fit: BoxFit.cover,
-                                placeholder: (context, url) => const Center(
-                                  child: CircularProgressIndicator(),
-                                ),
-                                errorWidget: (context, url, error) => Center(
-                                  child: Icon(
-                                    Icons.pets,
-                                    size: 100,
-                                    color: AppTheme.primary(context),
-                                  ),
-                                ),
+                        // Image Section
+                        Container(
+                          height: 380,
+                          width: double.infinity,
+                          decoration: const BoxDecoration(
+                            color: Color(0xFFE8F8F6),
+                            borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(32),
+                              bottomRight: Radius.circular(32),
+                            ),
+                          ),
+                          clipBehavior: Clip.antiAlias,
+                          child: CachedNetworkImage(
+                            imageUrl: imageUrl ?? '',
+                            fit: BoxFit.cover,
+                            placeholder: (context, url) => const Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                            errorWidget: (context, url, error) => Center(
+                              child: Icon(
+                                Icons.pets,
+                                size: 100,
+                                color: AppTheme.primary(context),
                               ),
                             ),
+                          ),
+                        ),
 
-                            // Back button and favourite button
-                            Positioned(
-                              top: 20,
-                              left: 16,
-                              child: GestureDetector(
-                                onTap: () => Navigator.pop(context),
-                                child: Icon(
-                                  Icons.arrow_back_ios_new,
-                                  color: AppTheme.primary(context),
-                                  size: 20,
-                                ),
-                              ),
+                        // Back button and favourite button
+                        Positioned(
+                          top: 20,
+                          left: 16,
+                          child: GestureDetector(
+                            onTap: () => Navigator.pop(context),
+                            child: Icon(
+                              Icons.arrow_back_ios_new,
+                              color: AppTheme.primary(context),
+                              size: 20,
                             ),
+                          ),
+                        ),
 
-                            Positioned(
-                              top: 20,
-                              right: 16,
-                              child: GestureDetector(
+                        Positioned(
+                          top: 20,
+                          right: 16,
+                          child: BlocBuilder<FavouritesBloc, FavouritesState>(
+                            builder: (context, favState) {
+                              final isFavourite = _isFavourite(imageId ?? '', widget.type, favState);
+                              return GestureDetector(
                                 onTap: () {
                                   if (isFavourite) {
                                     // Remove from favourites
                                     FavouriteEntity? fav;
                                     if (favState is FavouritesLoaded) {
-                                      try {
-                                        fav = favState.favourites.firstWhere((f) => f.imageId == imageId && f.type == widget.type,);
-                                      } catch (_) {
-                                        fav = null;
-                                      }
+                                      fav = favState.favourites.cast<FavouriteEntity?>().firstWhere(
+                                          (f) => f?.imageId == imageId && f?.type == widget.type,
+                                          orElse: () => null,
+                                      );
                                     }
                                     if (fav != null) {
                                       _favouritesBloc.add(
@@ -173,159 +184,147 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                   }
                                 },
                                 child: Icon(
-                                  isFavourite
-                                      ? Icons.favorite
-                                      : Icons.favorite_border,
+                                  isFavourite ? Icons.favorite : Icons.favorite_border,
                                   color: AppTheme.primary(context),
                                   size: 28,
                                 ),
-                              ),
-                            ),
-                          ],
+                              );
+                            },
+                          ),
                         ),
+                      ],
+                    ),
 
-                        // Details section
-                        Expanded(
-                          child: Container(
-                            width: double.infinity,
-                            color: AppTheme.background(context),
-                            child: SingleChildScrollView(
-                              padding: const EdgeInsets.all(24),
-                              child: Column(
+                    // Details section
+                    Expanded(
+                      child: Container(
+                        width: double.infinity,
+                        color: AppTheme.background(context),
+                        child: SingleChildScrollView(
+                          padding: const EdgeInsets.all(24),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Expanded(
-                                        child: Text(
-                                          pet.name,
-                                          style: TextStyle(
-                                            fontSize: 23,
-                                            fontWeight: FontWeight.bold,
-                                            color: AppTheme.textPrimary(
-                                              context,
-                                            ),
-                                          ),
-                                        ),
+                                  Expanded(
+                                    child: Text(
+                                      pet.name,
+                                      style: TextStyle(
+                                        fontSize: 23,
+                                        fontWeight: FontWeight.bold,
+                                        color: AppTheme.textPrimary(context),
                                       ),
-                                      Text(
-                                        '\$${'35'}',
-                                        style: TextStyle(
-                                          fontSize: 23,
-                                          fontWeight: FontWeight.bold,
-                                          color: AppTheme.primary(context),
-                                        ),
-                                      ),
-                                    ],
+                                    ),
                                   ),
-                                  const SizedBox(height: 4),
-                                  Row(
-                                    children: [
-                                      const Icon(
-                                        Icons.location_on,
-                                        size: 16,
-                                        color: Colors.red,
-                                      ),
-                                      const SizedBox(width: 4),
-                                      Text(
-                                        pet.origin ?? 'Unknown location',
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          color: AppTheme.textSecondary(
-                                            context,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 16),
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        child: InfoCard(
-                                          title: 'Gender',
-                                          value: 'Unknown',
-                                        ),
-                                      ),
-                                      const SizedBox(width: 12),
-                                      Expanded(
-                                        child: InfoCard(
-                                          title: 'Age',
-                                          value: pet.lifeSpan ?? 'Unknown',
-                                        ),
-                                      ),
-                                      const SizedBox(width: 12),
-                                      Expanded(
-                                        child: InfoCard(
-                                          title: 'Weight',
-                                          value: pet.weight ?? 'Unknown',
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 24),
                                   Text(
-                                    'About:',
+                                    '\$${'35'}',
                                     style: TextStyle(
-                                      fontSize: 20,
+                                      fontSize: 23,
                                       fontWeight: FontWeight.bold,
-                                      color: AppTheme.textPrimary(context),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 12),
-                                  Text(
-                                    pet.description ??
-                                        'No description available',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: AppTheme.textSecondary(context),
-                                      height: 1.6,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 32),
-                                  SizedBox(
-                                    width: double.infinity,
-                                    height: 56,
-                                    child: ElevatedButton(
-                                      onPressed: () {
-                                        SnackBarHelper.showInfo(
-                                          context,
-                                          "Adopting ${pet.name}...",
-                                        );
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: AppTheme.primary(
-                                          context,
-                                        ),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            16,
-                                          ),
-                                        ),
-                                        elevation: 0,
-                                      ),
-                                      child: const Text(
-                                        'Adopt me',
-                                        style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w600,
-                                          color: Colors.white,
-                                        ),
-                                      ),
+                                      color: AppTheme.primary(context),
                                     ),
                                   ),
                                 ],
                               ),
-                            ),
+                              const SizedBox(height: 4),
+                              Row(
+                                children: [
+                                  const Icon(
+                                    Icons.location_on,
+                                    size: 16,
+                                    color: Colors.red,
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    pet.origin ?? 'Unknown location',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: AppTheme.textSecondary(context),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 16),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: InfoCard(
+                                      title: 'Gender',
+                                      value: 'Unknown',
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: InfoCard(
+                                      title: 'Age',
+                                      value: pet.lifeSpan ?? 'Unknown',
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: InfoCard(
+                                      title: 'Weight',
+                                      value: pet.weight ?? 'Unknown',
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 24),
+                              Text(
+                                'About:',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppTheme.textPrimary(context),
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              Text(
+                                pet.description ?? 'No description available',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: AppTheme.textSecondary(context),
+                                  height: 1.6,
+                                ),
+                              ),
+                              const SizedBox(height: 32),
+                              SizedBox(
+                                width: double.infinity,
+                                height: 56,
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    SnackBarHelper.showInfo(
+                                      context,
+                                      "Adopting ${pet.name}...",
+                                    );
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: AppTheme.primary(context),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                    elevation: 0,
+                                  ),
+                                  child: const Text(
+                                    'Adopt me',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      ],
-                    );
-                  },
+                      ),
+                    ),
+                  ],
                 );
               } else if (petState is PetDetailsError) {
                 return ErrorStateView(
