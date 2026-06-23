@@ -61,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _petListBloc = sl<PetListBloc>()..add(LoadPets());;
+    _petListBloc = sl<PetListBloc>()..add(LoadPets());
     _searchController = TextEditingController();
     _scrollController = ScrollController();
     _scrollController.addListener(_onScroll);
