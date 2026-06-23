@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:petfinder/core/theming/theme_data.dart';
 
 class GetStartedButton extends StatelessWidget {
   final VoidCallback onPressed;
