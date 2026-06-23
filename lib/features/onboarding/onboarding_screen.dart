@@ -20,9 +20,10 @@ class OnboardingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDev = environment == 'development';
     final titleSuffix = isDev ? '\nDEV' : '';
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
-      backgroundColor: AppTheme.background(context),
+      backgroundColor: colorScheme.surface,
       body: SafeArea(
         child: Column(
           children: [
@@ -46,7 +47,7 @@ class OnboardingScreen extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 35,
                         fontWeight: FontWeight.w700,
-                        color: AppTheme.textPrimary(context),
+                        color: colorScheme.onSurface,
                         height: 1.2,
                         letterSpacing: -0.5,
                       ),
@@ -61,7 +62,7 @@ class OnboardingScreen extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w400,
-                        color: AppTheme.textSecondary(context),
+                        color: colorScheme.onSurfaceVariant,
                         height: 1.5,
                         letterSpacing: 0.1,
                       ),

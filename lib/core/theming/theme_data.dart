@@ -9,16 +9,14 @@ final ThemeData lightTheme = ThemeData(
     secondary: AppColors.lightTextSecondary,
     surface: AppColors.lightBackground,
     surfaceContainer: AppColors.lightSurface,
+    onSurface: AppColors.lightTextPrimary,
+    onSurfaceVariant: AppColors.lightTextSecondary,
   ),
   scaffoldBackgroundColor: AppColors.lightBackground,
   appBarTheme: const AppBarTheme(
     backgroundColor: AppColors.lightPrimary,
     foregroundColor: AppColors.lightBackground,
     elevation: 0,
-  ),
-  textTheme: const TextTheme(
-    bodyLarge: TextStyle(color: AppColors.lightTextPrimary),
-    bodyMedium: TextStyle(color: AppColors.lightTextSecondary),
   ),
 );
 
@@ -30,6 +28,8 @@ final ThemeData darkTheme = ThemeData(
     secondary: AppColors.darkTextSecondary,
     surface: AppColors.darkBackground,
     surfaceContainer: AppColors.darkSurface,
+      onSurface: AppColors.darkTextPrimary,
+      onSurfaceVariant: AppColors.darkTextSecondary,
   ),
   scaffoldBackgroundColor: AppColors.darkBackground,
   appBarTheme: const AppBarTheme(
@@ -38,13 +38,11 @@ final ThemeData darkTheme = ThemeData(
     elevation: 0,
   ),
   cardColor: const Color(0xFF1A1A1A),
-  textTheme: const TextTheme(
-    bodyLarge: TextStyle(color: AppColors.darkTextPrimary),
-    bodyMedium: TextStyle(color: AppColors.darkTextSecondary),
-  ),
 );
 
 class AppTheme {
+  const AppTheme._();
+
   static Color primary(BuildContext context) =>
       Theme.of(context).colorScheme.primary;
 
@@ -58,8 +56,8 @@ class AppTheme {
       Theme.of(context).colorScheme.surfaceContainer;
 
   static Color textPrimary(BuildContext context) =>
-      Theme.of(context).textTheme.bodyLarge?.color ?? Colors.black;
+      Theme.of(context).colorScheme.onSurface;
 
   static Color textSecondary(BuildContext context) =>
-      Theme.of(context).textTheme.bodyMedium?.color ?? Colors.grey;
+      Theme.of(context).colorScheme.onSurfaceVariant;
 }

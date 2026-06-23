@@ -11,7 +11,7 @@ class GetStartedButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final primaryColor = AppTheme.primary(context);
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Container(
       width: double.infinity,
@@ -21,7 +21,7 @@ class GetStartedButton extends StatelessWidget {
         borderRadius: BorderRadius.circular(28),
         boxShadow: [
           BoxShadow(
-            color: primaryColor.withValues(alpha: 0.3),
+            color: colorScheme.primary.withValues(alpha: 0.3),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
