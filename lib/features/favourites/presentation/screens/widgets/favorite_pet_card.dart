@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:petfinder/core/theming/theme_data.dart';
+import 'package:petfinder/core/utils/app_colors.dart';
 import 'package:petfinder/core/widgets/pet_image.dart';
 
 class FavoritePetCard extends StatelessWidget {
@@ -7,7 +8,7 @@ class FavoritePetCard extends StatelessWidget {
   final String image;
   final String origin;
   final VoidCallback onTap;
-  final VoidCallback onFavorite;
+  final VoidCallback onFavourite;
   final bool isFavourite;
 
   const FavoritePetCard({
@@ -16,39 +17,35 @@ class FavoritePetCard extends StatelessWidget {
     required this.image,
     required this.origin,
     required this.onTap,
-    required this.onFavorite,
+    required this.onFavourite,
     required this.isFavourite,
   });
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        decoration: BoxDecoration(
-          color: AppTheme.surface(context),
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
-              blurRadius: 10,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Card(
+      color: AppTheme.surface(context),
+      elevation: colorScheme.brightness == Brightness.light ? 2 : 4,
+      shadowColor: Colors.black.withValues(
+        alpha: colorScheme.brightness == Brightness.light ? 0.05 : 0.2,
+      ),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
             // Image Section
             Expanded(
               child: ClipRRect(
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(16),
-                  topRight: Radius.circular(16),
-                ),
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
                 child: ColoredBox(
-                  color: const Color(0xFFE8F8F6),
+                  color: AppColors.lightSurfaceAlt,
                   child: PetImage(imageUrl: image, iconSize: 50),
                 ),
               ),
@@ -66,7 +63,7 @@ class FavoritePetCard extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: AppTheme.textPrimary(context),
+                      color: colorScheme.onSurface,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -76,11 +73,7 @@ class FavoritePetCard extends StatelessWidget {
 
                   Row(
                     children: [
-                      const Icon(
-                        Icons.location_on,
-                        size: 14,
-                        color: Colors.red,
-                      ),
+                      const Icon(Icons.location_on, size: 14, color: Colors.red,),
 
                       const SizedBox(width: 4),
 
@@ -89,7 +82,7 @@ class FavoritePetCard extends StatelessWidget {
                           origin,
                           style: TextStyle(
                             fontSize: 12,
-                            color: AppTheme.textSecondary(context),
+                            color: colorScheme.onSurfaceVariant,
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -98,13 +91,17 @@ class FavoritePetCard extends StatelessWidget {
 
                       const SizedBox(width: 4),
 
-                      GestureDetector(
-                        onTap: onFavorite,
-                        child: Icon(
+                      IconButton(
+                        onPressed: onFavourite,
+                        icon: Icon(
                           isFavourite ? Icons.favorite : Icons.favorite_border,
-                          color: AppTheme.primary(context),
+                          color: colorScheme.primary,
                           size: 20,
                         ),
+                        visualDensity: VisualDensity.compact,
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints(),
+                        tooltip: isFavourite ? 'Remove from favorites' : 'Add to favorites',
                       ),
                     ],
                   ),
