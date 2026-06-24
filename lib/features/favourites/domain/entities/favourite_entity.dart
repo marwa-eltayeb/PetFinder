@@ -20,4 +20,22 @@ class FavouriteEntity {
     this.breedName,
     this.origin,
   });
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is FavouriteEntity &&
+        other.id == id &&
+        other.imageId == imageId &&
+        other.petId == petId &&
+        other.subId == subId &&
+        other.type == type &&
+        other.imageUrl == imageUrl &&
+        other.breedName == breedName &&
+        other.origin == origin;
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, imageId, petId, subId, type, imageUrl, breedName, origin);
 }

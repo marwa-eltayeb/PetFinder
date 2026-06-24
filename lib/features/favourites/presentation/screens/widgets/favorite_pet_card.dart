@@ -26,7 +26,7 @@ class FavoritePetCard extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Card(
-      color: AppTheme.surface(context),
+      color: colorScheme.surfaceContainer,
       elevation: colorScheme.brightness == Brightness.light ? 2 : 4,
       shadowColor: Colors.black.withValues(
         alpha: colorScheme.brightness == Brightness.light ? 0.05 : 0.2,

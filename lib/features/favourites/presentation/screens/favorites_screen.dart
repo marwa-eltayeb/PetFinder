@@ -1,8 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:petfinder/core/di/injection_container.dart';
 import 'package:petfinder/core/routing/routes.dart';
-import 'package:petfinder/core/theming/theme_data.dart';
 import 'package:petfinder/core/utils/pet_type.dart';
 import 'package:petfinder/core/widgets/bottom_nav_bar.dart';
 import 'package:petfinder/core/widgets/category_chip.dart';
@@ -20,17 +20,7 @@ class FavoritesScreen extends StatefulWidget {
 }
 
 class _FavoritesScreenState extends State<FavoritesScreen> {
-  String selectedCategory = 'All';
   late final FavouritesBloc _favouritesBloc;
-
-  final List<String> categories = [
-    'All',
-    'Cats',
-    'Dogs',
-    'Birds',
-    'Fish',
-    'Reptiles',
-  ];
 
   @override
   void initState() {
@@ -45,23 +35,14 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
     super.dispose();
   }
 
-  PetType? _getTypeFromCategory() {
-    switch (selectedCategory) {
-      case 'Cats': return PetType.cat;
-      case 'Dogs': return PetType.dog;
-      case 'Birds': return PetType.bird;
-      case 'Fish': return PetType.fish;
-      case 'Reptiles': return PetType.reptile;
-      default: return null;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return BlocProvider.value(
       value: _favouritesBloc,
       child: Scaffold(
-        backgroundColor: AppTheme.background(context),
+        backgroundColor: colorScheme.surface,
         body: SafeArea(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -73,43 +54,40 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
-                    color: AppTheme.textPrimary(context),
+                    color: colorScheme.onSurface,
                   ),
                 ),
               ),
+
               const SizedBox(height: 16),
-              SizedBox(
-                height: 40,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  itemCount: categories.length,
-                  itemBuilder: (context, index) {
-                    return CategoryChip(
-                      label: categories[index],
-                      isSelected: selectedCategory == categories[index],
-                      onTap: () {
-                        setState(() {
-                          selectedCategory = categories[index];
-                        });
-                        _favouritesBloc.add(
-                          LoadFavouritesEvent(type: _getTypeFromCategory()),
-                        );
-                      },
-                    );
-                  },
-                ),
+
+              _CategoryFilterRow(
+                onCategorySelected: (petType) {
+                  _favouritesBloc.add(LoadFavouritesEvent(type: petType));
+                },
               ),
+
               const SizedBox(height: 24),
+
               Expanded(
                 child: BlocBuilder<FavouritesBloc, FavouritesState>(
+                  buildWhen: (previous, current) {
+                    if (previous.runtimeType != current.runtimeType) {return true;}
+                    if (previous is FavouritesLoaded && current is FavouritesLoaded) {
+                      return !listEquals(
+                        previous.favourites,
+                        current.favourites,
+                      );
+                    }
+                    return true;
+                  },
                   builder: (context, state) {
                     if (state is FavouritesLoading) {
                       return const Center(child: CircularProgressIndicator());
                     } else if (state is FavouritesError) {
                       return ErrorStateView(
                         message: state.message,
-                        onRetry: () => context.read<FavouritesBloc>().add(LoadFavouritesEvent(type: _getTypeFromCategory())),
+                        onRetry: () => context.read<FavouritesBloc>().add(LoadFavouritesEvent(type: state.activeType)),
                       );
                     } else if (state is FavouritesLoaded) {
                       final favourites = state.favourites;
@@ -121,7 +99,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                               Icon(
                                 Icons.favorite_border,
                                 size: 64,
-                                color: AppTheme.textSecondary(context),
+                                color: colorScheme.onSurface,
                               ),
                               const SizedBox(height: 16),
                               Text(
@@ -129,14 +107,14 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
-                                  color: AppTheme.textPrimary(context),
+                                  color: colorScheme.onSurface,
                                 ),
                               ),
                               const SizedBox(height: 8),
                               Text(
                                 'Start adding pets to your favourites!',
                                 style: TextStyle(
-                                  color: AppTheme.textSecondary(context),
+                                  color: colorScheme.onSurfaceVariant,
                                 ),
                               ),
                             ],
@@ -173,7 +151,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                                 },
                               );
                             },
-                            onFavorite: () {
+                            onFavourite: () {
                               _favouritesBloc.add(
                                 RemoveFavouriteEvent(
                                   type: fav.type,
@@ -193,6 +171,66 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
           ),
         ),
         bottomNavigationBar: const BottomNavBar(currentIndex: 1),
+      ),
+    );
+  }
+}
+
+
+class _CategoryFilterRow extends StatefulWidget {
+  const _CategoryFilterRow({required this.onCategorySelected});
+
+  final ValueChanged<PetType?> onCategorySelected;
+
+  @override
+  State<_CategoryFilterRow> createState() => _CategoryFilterRowState();
+}
+
+class _CategoryFilterRowState extends State<_CategoryFilterRow> {
+
+  String selectedCategory = 'All';
+
+  final List<String> categories = [
+    'All',
+    'Cats',
+    'Dogs',
+    'Birds',
+    'Fish',
+    'Reptiles',
+  ];
+
+  PetType? _getTypeFromCategory(String category) {
+    switch (category) {
+      case 'Cats':return PetType.cat;
+      case 'Dogs':return PetType.dog;
+      case 'Birds':return PetType.bird;
+      case 'Fish':return PetType.fish;
+      case 'Reptiles':return PetType.reptile;
+      default:return null;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 40,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        itemCount: categories.length,
+        itemBuilder: (context, index) {
+          final category = categories[index];
+          return CategoryChip(
+            label: category,
+            isSelected: selectedCategory == category,
+            onTap: () {
+              setState(() {
+                selectedCategory = category;
+              });
+              widget.onCategorySelected(_getTypeFromCategory(category));
+            },
+          );
+        },
       ),
     );
   }

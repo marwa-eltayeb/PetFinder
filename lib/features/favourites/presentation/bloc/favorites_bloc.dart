@@ -20,7 +20,7 @@ class FavouritesBloc extends Bloc<FavouritesEvent, FavouritesState> {
   Future<void> _onGetFavourites(LoadFavouritesEvent event, Emitter<FavouritesState> emit,) async {
     const supportedTypes = {null, PetType.cat, PetType.dog};
     if (!supportedTypes.contains(event.type)) {
-      emit(FavouritesLoaded(favourites: []));
+      emit(FavouritesLoaded(favourites: [], activeType: event.type));
       return;
     }
 
@@ -30,13 +30,13 @@ class FavouritesBloc extends Bloc<FavouritesEvent, FavouritesState> {
         // Fetch both cats and dogs
         final cats = await getFavouritesUseCase(PetType.cat);
         final dogs = await getFavouritesUseCase(PetType.dog);
-        emit(FavouritesLoaded(favourites: [...cats, ...dogs]));
+        emit(FavouritesLoaded(favourites: [...cats, ...dogs], activeType: null));
       } else {
         final favourites = await getFavouritesUseCase(event.type!);
-        emit(FavouritesLoaded(favourites: favourites));
+        emit(FavouritesLoaded(favourites: favourites, activeType: event.type));
       }
     } catch (e) {
-      emit(FavouritesError(e.toString()));
+      emit(FavouritesError(e.toString(), activeType: event.type));
     }
   }
 
@@ -53,9 +53,9 @@ class FavouritesBloc extends Bloc<FavouritesEvent, FavouritesState> {
       );
 
       if (state is FavouritesLoaded) {
-        final current = (state as FavouritesLoaded).favourites;
-        final updated = [...current, newFavourite];
-        emit(FavouritesLoaded(favourites: updated));
+        final current = state as FavouritesLoaded;
+        final updatedFavourites = [...current.favourites, newFavourite];
+        emit(FavouritesLoaded(favourites: updatedFavourites, activeType: current.activeType));
       } else {
         add(LoadFavouritesEvent(type: null));
       }
@@ -69,9 +69,9 @@ class FavouritesBloc extends Bloc<FavouritesEvent, FavouritesState> {
       await removeFavouriteUseCase(event.type, event.favouriteId);
 
       if (state is FavouritesLoaded) {
-        final current = (state as FavouritesLoaded).favourites;
-        final updated = current.where((f) => f.id != event.favouriteId).toList();
-        emit(FavouritesLoaded(favourites: updated));
+        final current = state as FavouritesLoaded;
+        final updated = current.favourites.where((f) => f.id != event.favouriteId).toList();
+        emit(FavouritesLoaded(favourites: updated, activeType: current.activeType));
       } else {
         add(LoadFavouritesEvent(type: null));
       }
