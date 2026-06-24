@@ -3,9 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:petfinder/core/di/injection_container.dart';
 import 'package:petfinder/core/routing/routes.dart';
-import 'package:petfinder/core/utils/pet_type.dart';
 import 'package:petfinder/core/widgets/bottom_nav_bar.dart';
-import 'package:petfinder/core/widgets/category_chip.dart';
+import 'package:petfinder/core/widgets/category_filter_row.dart';
 import 'package:petfinder/core/widgets/error_state_view.dart' show ErrorStateView;
 import 'package:petfinder/features/favourites/presentation/bloc/favorites_bloc.dart';
 import 'package:petfinder/features/favourites/presentation/bloc/favorites_event.dart';
@@ -61,7 +60,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
 
               const SizedBox(height: 16),
 
-              _CategoryFilterRow(
+              CategoryFilterRow(
                 onCategorySelected: (petType) {
                   _favouritesBloc.add(LoadFavouritesEvent(type: petType));
                 },
@@ -177,61 +176,3 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
 }
 
 
-class _CategoryFilterRow extends StatefulWidget {
-  const _CategoryFilterRow({required this.onCategorySelected});
-
-  final ValueChanged<PetType?> onCategorySelected;
-
-  @override
-  State<_CategoryFilterRow> createState() => _CategoryFilterRowState();
-}
-
-class _CategoryFilterRowState extends State<_CategoryFilterRow> {
-
-  String selectedCategory = 'All';
-
-  final List<String> categories = [
-    'All',
-    'Cats',
-    'Dogs',
-    'Birds',
-    'Fish',
-    'Reptiles',
-  ];
-
-  PetType? _getTypeFromCategory(String category) {
-    switch (category) {
-      case 'Cats':return PetType.cat;
-      case 'Dogs':return PetType.dog;
-      case 'Birds':return PetType.bird;
-      case 'Fish':return PetType.fish;
-      case 'Reptiles':return PetType.reptile;
-      default:return null;
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 40,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        itemCount: categories.length,
-        itemBuilder: (context, index) {
-          final category = categories[index];
-          return CategoryChip(
-            label: category,
-            isSelected: selectedCategory == category,
-            onTap: () {
-              setState(() {
-                selectedCategory = category;
-              });
-              widget.onCategorySelected(_getTypeFromCategory(category));
-            },
-          );
-        },
-      ),
-    );
-  }
-}

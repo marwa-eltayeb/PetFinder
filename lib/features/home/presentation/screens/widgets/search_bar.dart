@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:petfinder/core/theming/theme_data.dart';
 
 class CustomSearchBar extends StatelessWidget {
   final ValueChanged<String> onChanged;
@@ -9,16 +8,18 @@ class CustomSearchBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Container(
       height: 50,
       decoration: BoxDecoration(
-        color: AppTheme.surface(context),
+        color: colorScheme.surfaceContainer,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
         children: [
           const SizedBox(width: 16),
-          Icon(Icons.search, color: AppTheme.textSecondary(context)),
+          Icon(Icons.search, color: colorScheme.onSurfaceVariant),
           const SizedBox(width: 12),
           Expanded(
             child: TextField(

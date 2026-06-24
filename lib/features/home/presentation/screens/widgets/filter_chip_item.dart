@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../core/utils/app_colors.dart';
+
 class FilterChipItem extends StatelessWidget {
   final String label;
   final VoidCallback onTap;
@@ -12,19 +14,23 @@ class FilterChipItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return InkWell(
       onTap: onTap,
-      child: Container(
+      child: Ink(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         decoration: BoxDecoration(
-          color: Colors.blue.shade50,
+          color: isDark ? AppColors.darkSurface : AppColors.lightSurfaceAlt,
+          border: Border.all(
+            color: isDark ? AppColors.darkPrimary : AppColors.lightPrimary,
+          ),
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: Colors.blueAccent),
         ),
         child: Text(
           label,
-          style: const TextStyle(
-            color: Colors.blueAccent,
+          style: TextStyle(
+            color: isDark ? AppColors.darkPrimary : AppColors.lightPrimary,
             fontSize: 14,
           ),
         ),

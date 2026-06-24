@@ -2,14 +2,14 @@ import '../../domain/entities/pet.dart';
 
 class PetFilterUtils {
 
-  static List<String> extractOrigins(List<Pet> pets, {int limit = 10}) {
+  static List<String> extractOrigins(List<PetEntity> pets, {int limit = 10}) {
     return _countAndSort(
       pets.map((p) => p.origin).whereType<String>(),
       limit: limit,
     );
   }
 
-  static List<String> extractTemperaments(List<Pet> pets, {int limit = 10}) {
+  static List<String> extractTemperaments(List<PetEntity> pets, {int limit = 10}) {
     return _countAndSort(
       pets.expand((p) => p.temperament?.split(',') ?? []),
       limit: limit,

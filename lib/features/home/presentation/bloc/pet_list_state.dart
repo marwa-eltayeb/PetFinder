@@ -8,8 +8,8 @@ class PetListInitial extends PetListState {}
 class PetListLoading extends PetListState {}
 
 class PetListLoaded extends PetListState {
-  final List<Pet> allPets;
-  final List<Pet> filteredPets;
+  final List<PetEntity> allPets;
+  final List<PetEntity> filteredPets;
   final PetType? petType;
   final bool hasMoreData;
 
@@ -22,8 +22,8 @@ class PetListLoaded extends PetListState {
 }
 
 class PetListLoadingMore extends PetListState {
-  final List<Pet> allPets;
-  final List<Pet> filteredPets;
+  final List<PetEntity> allPets;
+  final List<PetEntity> filteredPets;
   final PetType? petType;
 
   PetListLoadingMore({

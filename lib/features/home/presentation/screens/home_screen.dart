@@ -6,7 +6,7 @@ import 'package:petfinder/core/theming/theme_data.dart';
 import 'package:petfinder/core/utils/pet_type.dart';
 import 'package:petfinder/core/utils/snackbar_helper.dart';
 import 'package:petfinder/core/widgets/bottom_nav_bar.dart';
-import 'package:petfinder/core/widgets/category_chip.dart';
+import 'package:petfinder/core/widgets/category_filter_row.dart';
 import 'package:petfinder/core/widgets/error_state_view.dart';
 import 'package:petfinder/features/details/presentation/screens/details_screen.dart';
 import 'package:petfinder/features/favourites/presentation/bloc/favorites_bloc.dart';
@@ -30,38 +30,18 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  String selectedCategory = 'All';
   late final PetListBloc _petListBloc;
+  late final FavouritesBloc _favouritesBloc;
   late final TextEditingController _searchController;
   late final ScrollController _scrollController;
 
-  final List<String> categories = [
-    'All',
-    'Cats',
-    'Dogs',
-    'Birds',
-    'Fish',
-    'Reptiles',
-  ];
-
-  PetType? _getTypeFromCategory(String category) {
-    return category == 'Cats'
-        ? PetType.cat
-        : category == 'Dogs'
-        ? PetType.dog
-        : category == 'Birds'
-        ? PetType.bird
-        : category == 'Fish'
-        ? PetType.fish
-        : category == 'Reptiles'
-        ? PetType.reptile
-        : null;
-  }
+  PetType? _selectedType;
 
   @override
   void initState() {
     super.initState();
     _petListBloc = sl<PetListBloc>()..add(LoadPets());
+    _favouritesBloc = sl<FavouritesBloc>()..add(LoadFavouritesEvent(type: null));
     _searchController = TextEditingController();
     _scrollController = ScrollController();
     _scrollController.addListener(_onScroll);
@@ -70,6 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void dispose() {
     _petListBloc.close();
+    _favouritesBloc.close();
     _searchController.dispose();
     _scrollController.dispose();
     super.dispose();
@@ -79,8 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
     if (_isBottom) {
       final state = _petListBloc.state;
       if (state is PetListLoaded && state.hasMoreData) {
-        final type = _getTypeFromCategory(selectedCategory);
-        _petListBloc.add(LoadMorePets(type: type));
+        _petListBloc.add(LoadMorePets(type: _selectedType));
       }
     }
   }
@@ -97,7 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return MultiBlocProvider(
       providers: [
         BlocProvider.value(value: _petListBloc),
-        BlocProvider(create: (_) => sl<FavouritesBloc>()..add(LoadFavouritesEvent(type: null))),
+        BlocProvider.value(value: _favouritesBloc),
       ],
       child: Scaffold(
         backgroundColor: AppTheme.background(context),
@@ -146,12 +126,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     Expanded(
                       child: CustomSearchBar(
                         onChanged: (query) {
-                          final type = _getTypeFromCategory(selectedCategory);
-
                           if (query.isEmpty) {
-                            _petListBloc.add(LoadPets(type: type));
+                            _petListBloc.add(LoadPets(type: _selectedType));
                           } else {
-                            _petListBloc.add(SearchPets(query, type: type));
+                            _petListBloc.add(SearchPets(query, type: _selectedType));
                           }
                         },
                         controller: _searchController,
@@ -177,30 +155,34 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
               ),
+
               const SizedBox(height: 16),
 
-              SizedBox(
-                height: 40,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  itemCount: categories.length,
-                  itemBuilder: (context, index) {
-                    final category = categories[index];
-                    return CategoryChip(
-                      label: category,
-                      isSelected: selectedCategory == category,
-                      onTap: () => _handleCategorySelection(category),
-                    );
-                  },
-                ),
+              CategoryFilterRow(
+                onCategorySelected: (petType) {
+                  _selectedType = petType;
+                  _searchController.clear();
+                  if (_scrollController.hasClients) {
+                    _scrollController.jumpTo(0);
+                  }
+                  _petListBloc.add(LoadPets(type: petType));
+                },
               ),
+
               const SizedBox(height: 24),
 
               // Pet List + Favourites handling
               Expanded(
                 child: BlocBuilder<PetListBloc, PetListState>(
                   bloc: _petListBloc,
+                  buildWhen: (previous, current) {
+                    if (previous.runtimeType != current.runtimeType) return true;
+                    if (previous is PetListLoaded && current is PetListLoaded) {
+                      return previous.filteredPets != current.filteredPets ||
+                          previous.hasMoreData != current.hasMoreData;
+                    }
+                    return true;
+                  },
                   builder: (context, petState) {
                     if (petState is PetListLoading) {
                       return const Center(
@@ -224,7 +206,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               Icon(Icons.search_off_rounded, size: 64, color: Colors.grey[400]),
                               const SizedBox(height: 16),
                               Text(
-                                'No $selectedCategory found',
+                                'No ${_selectedType?.displayName ?? 'Pets'} found',
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.w600,
@@ -266,7 +248,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 );
                               }
 
-                              final Pet pet = pets[index];
+                              final PetEntity pet = pets[index];
                               final keyString = '${pet.imageId}_${pet.type.index}';
                               final isFavourite = favouriteIds.contains(keyString);
 
@@ -347,19 +329,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void _handleCategorySelection(String category) {
-    setState(() => selectedCategory = category);
-    _searchController.clear();
-
-    // Reset scroll position to top
-    if (_scrollController.hasClients) {
-      _scrollController.jumpTo(0);
-    }
-
-    final type = _getTypeFromCategory(category);
-    _petListBloc.add(LoadPets(type: type));
-  }
-
   void _showFilterSheet() {
     final state = _petListBloc.state;
     if (state is! PetListLoaded) return;
@@ -370,10 +339,12 @@ class _HomeScreenState extends State<HomeScreen> {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      builder: (_) => FilterSheet(
-        origins: PetFilterUtils.extractOrigins(state.allPets),
-        temperaments: PetFilterUtils.extractTemperaments(state.allPets),
-        bloc: _petListBloc,
+      builder: (_) => BlocProvider.value(
+        value: _petListBloc,
+        child: FilterSheet(
+          origins: PetFilterUtils.extractOrigins(state.allPets),
+          temperaments: PetFilterUtils.extractTemperaments(state.allPets),
+        ),
       ),
     );
   }

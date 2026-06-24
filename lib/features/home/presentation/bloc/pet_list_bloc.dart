@@ -9,7 +9,7 @@ import 'package:petfinder/features/home/presentation/bloc/pet_list_state.dart';
 class PetListBloc extends Bloc<PetListEvent, PetListState> {
   final GetAllPetsUseCase getAllPets;
   final SearchPetsUseCase searchPets;
-  List<Pet> _allPets = [];
+  List<PetEntity> _allPets = [];
 
   int _currentPage = 0;
   bool _hasMoreData = true;
@@ -140,7 +140,7 @@ class PetListBloc extends Bloc<PetListEvent, PetListState> {
     final currentState = state;
     if (currentState is! PetListLoaded) return;
 
-    List<Pet> filtered = currentState.allPets;
+    List<PetEntity> filtered = currentState.allPets;
 
     // If both are null, show all pets
     if (event.origin == null && event.temperament == null) {

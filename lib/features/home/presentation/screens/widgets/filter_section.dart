@@ -28,14 +28,7 @@ class FilterSection extends StatelessWidget {
         Wrap(
           spacing: 8,
           runSpacing: 8,
-          children: items
-              .map(
-                (item) => FilterChipItem(
-              label: item,
-              onTap: () => onTap(item),
-            ),
-          )
-          .toList(),
+          children: items.map((item) => FilterChipItem(label: item, onTap: () => onTap(item))).toList(),
         ),
       ],
     );

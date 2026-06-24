@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:petfinder/features/home/presentation/bloc/pet_list_bloc.dart';
 import 'package:petfinder/features/home/presentation/bloc/pet_list_event.dart';
 import 'package:petfinder/features/home/presentation/screens/widgets/filter_section.dart';
@@ -6,17 +7,17 @@ import 'package:petfinder/features/home/presentation/screens/widgets/filter_sect
 class FilterSheet extends StatelessWidget {
   final List<String> origins;
   final List<String> temperaments;
-  final PetListBloc bloc;
 
   const FilterSheet({
     super.key,
     required this.origins,
     required this.temperaments,
-    required this.bloc,
   });
 
   @override
   Widget build(BuildContext context) {
+    final petListBloc = context.read<PetListBloc>();
+    
     return Container(
       constraints: BoxConstraints(
         maxHeight: MediaQuery.of(context).size.height * 0.8,
@@ -51,7 +52,7 @@ class FilterSheet extends StatelessWidget {
                 ),
                 TextButton(
                   onPressed: () {
-                    bloc.add(FilterPets());
+                    petListBloc.add(FilterPets());
                     Navigator.pop(context);
                   },
                   child: const Text('Clear'),
@@ -63,7 +64,7 @@ class FilterSheet extends StatelessWidget {
               title: 'Origin',
               items: origins,
               onTap: (origin) {
-                bloc.add(FilterPets(origin: origin));
+                petListBloc.add(FilterPets(origin: origin));
                 Navigator.pop(context);
               },
             ),
@@ -72,7 +73,7 @@ class FilterSheet extends StatelessWidget {
               title: 'Temperament',
               items: temperaments,
               onTap: (temperament) {
-                bloc.add(FilterPets(temperament: temperament));
+                petListBloc.add(FilterPets(temperament: temperament));
                 Navigator.pop(context);
               },
             ),

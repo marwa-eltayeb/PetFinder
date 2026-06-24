@@ -17,7 +17,7 @@ class PetRepositoryImpl implements PetRepository {
   });
 
   @override
-  Future<List<Pet>> getAllPets({int limit = 10, int page = 0}) async {
+  Future<List<PetEntity>> getAllPets({int limit = 10, int page = 0}) async {
     try {
       // Get cached data first for both types
       final cachedCats = await localDataSource.getCachedPets(
@@ -70,7 +70,7 @@ class PetRepositoryImpl implements PetRepository {
   }
 
   @override
-  Future<List<Pet>> searchPets(String query) async {
+  Future<List<PetEntity>> searchPets(String query) async {
     try {
       final results = await Future.wait([
         remoteDataSource.searchPets(PetType.cat, query),

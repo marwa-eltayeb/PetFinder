@@ -78,7 +78,7 @@ class PetModel {
     );
   }
 
-  factory PetModel.fromEntity(Pet pet) {
+  factory PetModel.fromEntity(PetEntity pet) {
     return PetModel(
       id: pet.id,
       name: pet.name,
@@ -90,8 +90,8 @@ class PetModel {
     );
   }
 
-  Pet toEntity() {
-    return Pet(
+  PetEntity toEntity() {
+    return PetEntity(
       id: id,
       name: name,
       type: type,

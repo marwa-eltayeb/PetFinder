@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:petfinder/core/theming/theme_data.dart';
+import 'package:petfinder/core/utils/app_colors.dart';
 import 'package:petfinder/core/widgets/pet_image.dart';
 
 class PetCard extends StatelessWidget {
@@ -50,7 +51,7 @@ class PetCard extends StatelessWidget {
               height: 100,
               width: 100,
               decoration: BoxDecoration(
-                color: const Color(0xFFE8F8F6),
+                color: AppColors.lightSurfaceAlt,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: ClipRRect(

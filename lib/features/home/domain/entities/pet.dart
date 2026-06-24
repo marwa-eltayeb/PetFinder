@@ -1,6 +1,6 @@
 import '../../../../core/utils/pet_type.dart';
 
-class Pet {
+class PetEntity {
   final String id;
   final String name;
   final PetType type;
@@ -9,7 +9,7 @@ class Pet {
   final String? origin;
   final String? temperament;
 
-  Pet({
+  PetEntity({
     required this.id,
     required this.name,
     required this.type,

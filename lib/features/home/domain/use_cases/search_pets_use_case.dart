@@ -6,7 +6,7 @@ class SearchPetsUseCase {
 
   SearchPetsUseCase(this.repository);
 
-  Future<List<Pet>> call(String query) {
+  Future<List<PetEntity>> call(String query) {
     return repository.searchPets(query);
   }
 }

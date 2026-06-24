@@ -6,7 +6,7 @@ class GetAllPetsUseCase {
 
   GetAllPetsUseCase(this.repository);
 
-  Future<List<Pet>> call({int limit = 10, int page = 0}) {
+  Future<List<PetEntity>> call({int limit = 10, int page = 0}) {
     return repository.getAllPets(limit: limit, page: page);
   }
 }
