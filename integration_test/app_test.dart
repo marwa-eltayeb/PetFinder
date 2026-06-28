@@ -14,6 +14,10 @@ import 'package:petfinder/features/home/presentation/screens/widgets/search_bar.
 import 'package:petfinder/features/onboarding/widgets/get_started_button.dart';
 import 'package:petfinder/features/home/presentation/screens/widgets/pet_card.dart';
 import 'package:petfinder/features/details/presentation/screens/details_screen.dart';
+import 'package:petfinder/features/home/data/datasources/pet_remote_data_source.dart';
+import 'package:petfinder/features/details/data/datasources/pet_details_remote_data_source.dart';
+import 'package:petfinder/features/favourites/data/datsources/favourites_remote_data_source.dart';
+import 'fakes/fake_remote_data_sources.dart';
 
 void main() {
 
@@ -50,6 +54,16 @@ void main() {
       }
 
       await initAll();
+
+      // Register fake data sources
+      sl.unregister<PetRemoteDataSource>();
+      sl.registerLazySingleton<PetRemoteDataSource>(() => FakePetRemoteDataSource());
+
+      sl.unregister<PetDetailsRemoteDataSource>();
+      sl.registerLazySingleton<PetDetailsRemoteDataSource>(() => FakePetDetailsRemoteDataSource());
+
+      sl.unregister<FavouritesRemoteDataSource>();
+      sl.registerLazySingleton<FavouritesRemoteDataSource>(() => FakeFavouritesRemoteDataSource());
     });
 
     tearDown(() async {
