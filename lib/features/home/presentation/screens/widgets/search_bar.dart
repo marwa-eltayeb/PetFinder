@@ -1,14 +1,40 @@
 import 'package:flutter/material.dart';
 
-class CustomSearchBar extends StatelessWidget {
+class CustomSearchBar extends StatefulWidget {
   final ValueChanged<String> onChanged;
   final TextEditingController? controller;
+  final VoidCallback? onClear;
 
-  const CustomSearchBar({super.key, required this.onChanged, this.controller});
+  const CustomSearchBar({
+    super.key,
+    required this.onChanged,
+    this.controller,
+    this.onClear,
+  });
+
+  @override
+  State<CustomSearchBar> createState() => _CustomSearchBarState();
+}
+
+class _CustomSearchBarState extends State<CustomSearchBar> {
+  @override
+  void initState() {
+    super.initState();
+    widget.controller?.addListener(_onTextChanged);
+  }
+
+  @override
+  void dispose() {
+    widget.controller?.removeListener(_onTextChanged);
+    super.dispose();
+  }
+
+  void _onTextChanged() => setState(() {});
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final showClear = widget.onClear != null && (widget.controller?.text.isNotEmpty ?? false);
 
     return Container(
       height: 50,
@@ -23,15 +49,21 @@ class CustomSearchBar extends StatelessWidget {
           const SizedBox(width: 12),
           Expanded(
             child: TextField(
-              controller: controller,
+              controller: widget.controller,
               decoration: const InputDecoration(
                 hintText: 'Search',
                 border: InputBorder.none,
                 isCollapsed: true,
               ),
-              onChanged: onChanged,
+              onChanged: widget.onChanged,
             ),
           ),
+          if (showClear)
+            IconButton(
+              icon: Icon(Icons.close, color: colorScheme.onSurfaceVariant),
+              splashRadius: 20,
+              onPressed: widget.onClear,
+            ),
         ],
       ),
     );

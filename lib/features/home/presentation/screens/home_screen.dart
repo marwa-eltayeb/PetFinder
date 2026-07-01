@@ -133,6 +133,11 @@ class _HomeScreenState extends State<HomeScreen> {
                           }
                         },
                         controller: _searchController,
+                        onClear: () {
+                          _searchController.clear();
+                          FocusScope.of(context).unfocus();
+                          _petListBloc.add(LoadPets(type: _selectedType));
+                        },
                       ),
                     ),
                     const SizedBox(width: 12),
