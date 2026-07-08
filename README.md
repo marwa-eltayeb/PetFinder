@@ -114,7 +114,7 @@ Each feature follows **3-layer architecture**:
 
 ## 🎬Project Preview
 
-[Youtube](https://www.youtube.com/shorts/mTaha-gZBic)
+[Youtube](https://www.youtube.com/shorts/5PTLmIGq3sc)
 
 ## 👤 Author
 
